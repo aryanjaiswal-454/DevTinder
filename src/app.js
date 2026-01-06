@@ -2,32 +2,26 @@ const express = require("express");
 
 const app = express();
 
-app.get(
-    "/user",
-    [(req,res,next)=>{
-        console.log("1st response sended");
-        // res.send("Route Handler 1");
-        next();  // This will give error because response is already sent but not in the last one because in last one it's acceptable
-    },
-    (req,res,next)=>{
-        console.log("2nd response sended");
-        // res.send("Route Handler 2");
-        next();
-    }],
-    [(req,res,next)=>{
-        console.log("3rd response sended");
-        res.send("Route Handler 3");
-        next();
+const {adminAuth,userAuth} = require("./middlewares/auth")
 
-    }],
-    (req,res,next)=>{
-        console.log("4th response sended");
-        // res.send("Route Handler 4"); 
-        next();  // This will not give error even after sending response because it's the last middleware
-    }
-)
+// handle auth middleware for all GET, POST, DELETE ...requests
+app.use("/admin", adminAuth)
 
-// Middleware -  function that has access to req, res and next objects
+app.post("/user/login",(req,res)=>{
+    res.send("Logged in successfully");
+})
+app.get("/user", userAuth, (req,res)=>{
+    res.send("User data sent");
+})
+app.get("/admin/getAllData",(req,res)=>{
+    res.send("All data from admin");
+})
+app.delete("/admin/deleteUser",(req,res)=>{
+    res.send("User deleted");
+})
+
+
+
 
 
 app.listen(3000,()=>{
