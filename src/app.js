@@ -1,7 +1,30 @@
 const express = require("express");
-const app = express();
 
 const connectDB = require("./config/database.js");
+const User = require("./models/user.js")
+
+const app = express();
+
+
+app.post("/signup",async (req,res)=>{
+    const userObj = {
+        firstName : "Rohit",
+        lastName : "Sharma",
+        emailId : "rohit@bcci.com",
+        password : "worldcup2027",
+        age : 20,
+        gender : "male"
+    }
+    try{
+        const user = new User(userObj);
+        await user.save();
+        res.send("User added successfully");
+    } catch(err){
+        res.status(400).send("Error occurred", res.message)
+    }
+})
+
+
 
 connectDB()
     .then(()=>{
@@ -9,7 +32,7 @@ connectDB()
         app.listen(3000,()=>{ 
             console.log("Server is running on port 3000");
         }); 
-    })
+    }) 
     .catch((err)=>{
         console.log("ERROR : Database did not connected");
     })
