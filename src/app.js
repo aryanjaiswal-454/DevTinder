@@ -29,7 +29,7 @@ app.get("/user", async (req,res)=>{
     const userEmailId = req.body.emailId;
 
     try{
-        const user = await User.findOne({emailId:userEmailId});  // a single object that created first
+        const user = await User.findOne({emailId:userEmailId});  // a single object that created first (oldest)
         if(!user) res.status(404).send("User not found")
         else res.send(user);
     } catch(err){
@@ -52,6 +52,18 @@ app.get("/feed", async (req,res)=>{
         if(users.length===0) res.status(404).send("User not found");
         else res.send(users);
     } catch(err){
+        res.status(400).send("Something went wrong");
+    }
+})
+
+app.delete("/user", async (req,res)=>{
+    const userId = req.body.userId;
+    try{
+        const user = await User.findByIdAndDelete(userId);
+        if(!user) res.send("User doesn't exist")
+        else res.send("User deleted successfully");
+    }
+    catch(err){
         res.status(400).send("Something went wrong");
     }
 })
