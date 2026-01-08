@@ -6,6 +6,7 @@ const User = require("./models/user.js")
 const app = express();
 
 app.use(express.json());
+
 app.post("/signup",async (req,res)=>{
     // const userObj = {
     //     firstName : "Rohit",
@@ -68,10 +69,21 @@ app.delete("/user", async (req,res)=>{
     }
 })
 
-
+app.patch("/user",async (req,res)=>{
+    const userId = req.body.userId;
+    const user = req.body;
+    try{
+        const a = await User.findByIdAndUpdate({_id : userId}, user , {returnDocument : "before"});
+        console.log(a);
+        res.send("User updataed successfully")
+    }
+    catch(err){
+        res.status(400).send("Something went wrong");
+    }
+})
 
 connectDB()
-    .then(()=>{
+    .then(()=>{  
         console.log("Database connected successfully");
         app.listen(3000,()=>{ 
             console.log("Server is running on port 3000");
