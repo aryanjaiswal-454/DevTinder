@@ -22,7 +22,7 @@ app.post("/signup",async (req,res)=>{
         await user.save();
         res.send("User added successfully");
     } catch(err){
-        res.status(400).send("Error occurred", err.message)
+        res.status(400).send(err.message)
     }
 })
 
@@ -73,12 +73,12 @@ app.patch("/user",async (req,res)=>{
     const userId = req.body.userId;
     const user = req.body;
     try{
-        const a = await User.findByIdAndUpdate({_id : userId}, user , {returnDocument : "before"});
+        const a = await User.findByIdAndUpdate({_id : userId}, user , {returnDocument : "before", runValidators : true} );
         console.log(a);
         res.send("User updataed successfully")
     }
     catch(err){
-        res.status(400).send("Something went wrong");
+        res.status(400).send(err.message);
     }
 })
 
