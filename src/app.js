@@ -97,6 +97,8 @@ app.patch("/user/:userId",async (req,res)=>{
     }
 })
 
+// NEVER TRUST req.body BECAUSE IT CAN GET MANY MALICIOUS THINGS IN YOUR DATABASE
+
 connectDB()
     .then(()=>{  
         console.log("Database connected successfully");
