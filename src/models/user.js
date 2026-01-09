@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema({
     firstName : {
@@ -24,12 +25,22 @@ const userSchema = new mongoose.Schema({
         trim : true,
         minLength : 1,
         maxLength : 30,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("Invalid emailId "+value);
+            }
+        }
     },
     password : {
         type : String,
         required : true,
         minLength : 5,
         maxLength : 50,
+        validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("Password is too weak");
+            }
+        }
     },
     age : {
         type : Number,
@@ -46,7 +57,12 @@ const userSchema = new mongoose.Schema({
     photoUrl : {
         type : String,
         trim : true,
-        default : "https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-No-Background.png"
+        default : "https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-No-Background.png",
+        validate(value){
+            if(!validator.isURL(value)){
+                throw new Error("Incorrect Photo URL");
+            }
+        }
     },
     about : {
         type : String,
