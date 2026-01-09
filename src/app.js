@@ -2,27 +2,28 @@ const express = require("express");
 
 const connectDB = require("./config/database.js");
 const User = require("./models/user.js")
+const {validateSignUpData} = require("./utils/validation.js")
 
 const app = express();
 
 app.use(express.json());
 
 app.post("/signup",async (req,res)=>{
-    // const userObj = {
-    //     firstName : "Rohit",
-    //     lastName : "Sharma",
-    //     emailId : "rohit@bcci.com",
-    //     password : "worldcup2027",
-    //     age : 20,
-    //     gender : "male"
-    // }
     const userObj = req.body
     try{
+        // Validation of data
+         validateSignUpData(req)
+
+        //  Encrypting Password
+        
+        
+        
+        // Saving user details to the database
         const user = new User(userObj);
         await user.save();
         res.send("User added successfully");
     } catch(err){
-        res.status(400).send(err.message)
+        res.status(400).send("ERROR : "+err.message)
     }
 })
 
