@@ -1,5 +1,6 @@
 const express = require("express");
 const bcrypt= require("bcrypt");
+const validator = require("validator")
 
 const connectDB = require("./config/database.js");
 const User = require("./models/user.js")
@@ -17,7 +18,6 @@ app.post("/signup",async (req,res)=>{
 
         //  Encrypting Password
         const passwordHash = await bcrypt.hash(password,10);
-        
         
         // Saving user details to the database
         const user = new User({
@@ -101,6 +101,22 @@ app.patch("/user/:userId",async (req,res)=>{
     }
     catch(err){
         res.status(401).send(err.message);
+    }
+})
+
+app.post("/login",async (req,res)=>{
+    try{
+        const {emailId, password} = req.body;
+        if(!validator.isEmail(emailId)) throw new Error("Invalid credentials");
+        const user = await User.findOne({emailId:emailId});
+        if(!user) throw new Error("Invalid credentials");
+        const userPassword = user.password;
+        const isPasswordValid = await bcrypt.compare(password,userPassword);
+        if(!isPasswordValid) throw new Error("Invalid credentials");
+        else res.send("Login successfull");
+    }
+    catch(err){
+        res.status(401).send("ERROR : "+err.message);
     }
 })
 
