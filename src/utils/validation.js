@@ -7,4 +7,4 @@ const validateSignUpData = (req)=>{
     else if(!validator.isStrongPassword(password)) throw new Error("Password is too weak");
 }
 
-module.exports={validateSignUpData};
+module.exports={validateSignUpData}; 

@@ -4,20 +4,25 @@ const validator = require("validator")
 
 const connectDB = require("./config/database.js");
 const User = require("./models/user.js")
-const {validateSignUpData} = require("./utils/validation.js")
+const {validateSignUpData} = require("./utils/validation.js");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const {userAuth} = require("./middlewares/auth.js");
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post("/signup",async (req,res)=>{
     const {firstName, lastName, emailId, password} = req.body
     try{
         // Validation of data
-         validateSignUpData(req)
+        validateSignUpData(req)
 
         //  Encrypting Password
         const passwordHash = await bcrypt.hash(password,10);
+
         
         // Saving user details to the database
         const user = new User({
@@ -32,7 +37,14 @@ app.post("/signup",async (req,res)=>{
         res.status(400).send("ERROR : "+err.message)
     }
 })
-
+app.get("/profile",userAuth, async (req,res)=>{
+    try{
+        res.send(req.user);
+    }
+    catch(err){
+        res.status(401).send("ERROR : "+err.message);
+    }
+})
 app.get("/user", async (req,res)=>{
     const userEmailId = req.body.emailId;
 
@@ -112,8 +124,12 @@ app.post("/login",async (req,res)=>{
         if(!user) throw new Error("Invalid credentials");
         const userPassword = user.password;
         const isPasswordValid = await bcrypt.compare(password,userPassword);
-        if(!isPasswordValid) throw new Error("Invalid credentials");
-        else res.send("Login successfull");
+        if(isPasswordValid){
+            const token = jwt.sign({_id:user._id},"DEV@Tinder$790");
+            res.cookie("token",token);
+            res.send("Login successfull");
+        }
+        else throw new Error("Invalid credentials");
     }
     catch(err){
         res.status(401).send("ERROR : "+err.message);
