@@ -75,7 +75,6 @@ app.post("/sendConnectionRequest",userAuth, (req,res)=>{
 })
 
 
-
 // NEVER TRUST req.body BECAUSE IT CAN GET MANY MALICIOUS THINGS IN YOUR DATABASE
 
 connectDB()
