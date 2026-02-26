@@ -14,7 +14,7 @@
 
 Status --- ignore, intrested, accepted, rejected
 
-## connectionRequestRouter
+## requestRouter
 - POST /request/send/intrested/:userId
 - POST /request/send/ignored/:userId
 - POST /request/review/accepted/:userId
