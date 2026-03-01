@@ -3,6 +3,7 @@
 // ## requestRouter
 // - POST /request/send/intrested/:userId
 // - POST /request/send/ignored/:userId
+
 // - POST /request/review/accepted/:userId
 // - POST /request/review/rejected/:userId
 
@@ -10,8 +11,10 @@ const  express = require('express');
 const {userAuth} = require("../middlewares/auth.js");
 const ConnectionRequest = require("../models/connectionRequest.js");
 const User = require("../models/user.js");
-// here error  
 const requestRouter = express.Router();
+
+// - POST /request/send/intrested/:userId
+// - POST /request/send/ignored/:userId
 requestRouter.post("/request/send/:status/:toUserId",userAuth, async (req,res)=>{
     try{
         const loggedInUser = req.user;
@@ -20,12 +23,15 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth, async (req,res)=>
         const status = req.params.status;
 
         const allowedStatus = ["ignored","intrested"];
-        if(!allowedStatus.includes(status)) throw new Error("Invalid status type");
+        if(!allowedStatus.includes(status))
+            return res.status(400).json({"ERROR" : "Invalid status type"});
         
         const isToUserIdValid = await User.findById(toUserId);
-        if(!isToUserIdValid) throw new Error("Invalid userId to send connection request");
+        if(!isToUserIdValid)
+            return res.status(400).json({"ERROR" : "Invalid userId to send connection request"});
 
-        // if(fromUserId.toString()===toUserId.toString()) throw new Error("You cannot send connection request to yourself");
+        if(fromUserId.toString()===toUserId.toString()) 
+            return res.status(400).json({"ERROR" : "You cannot send connection request to yourself"});
 
         const existingConnectionRequest = await ConnectionRequest.findOne({
             $or: [
@@ -33,7 +39,8 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth, async (req,res)=>
                 {fromUserId : toUserId, toUserId: fromUserId},
             ],
         });
-        if(existingConnectionRequest) throw new Error("Connection request already exists between these users");
+        if(existingConnectionRequest) 
+            return res.status(400).json({"ERROR" : "Connection request already exists between these users"});
 
         const connectionRequestObj = new ConnectionRequest({
             fromUserId,
@@ -46,6 +53,41 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth, async (req,res)=>
             message : "Connection request sent successfully",
             data,
         })
+    }
+    catch(err) {
+        res.status(401).send("ERROR : "+err.message);
+    }
+})
+
+
+// - POST /request/review/accepted/:userId
+// - POST /request/review/rejected/:userId
+requestRouter.post("/request/review/:status/:requestId",userAuth, async (req,res)=>{
+    try{
+        const loggedInUser = req.user;
+        const requestId = req.params.requestId;
+        const status = req.params.status;
+
+        const allowedStatus = ["accepted","rejected"];
+        if(!allowedStatus.includes(status))
+            return res.status(400).json({"ERROR" : "Invalid status type"});
+
+        const connectionRequest = await ConnectionRequest.findOne({
+            _id : requestId,
+            toUserId : loggedInUser._id,
+            status : "intrested",
+        });
+        if(!connectionRequest)
+            return res.status(400).json({"ERROR" : "Invalid connection request"});
+
+        connectionRequest.status = status;
+        const data = await connectionRequest.save();
+        res.json(
+            {
+                "message" : "Connection request "+status,
+                data,
+            }
+        )
     }
     catch(err) {
         res.status(401).send("ERROR : "+err.message);

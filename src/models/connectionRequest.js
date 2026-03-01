@@ -26,13 +26,13 @@ const connectionRequestSchema = new mongoose.Schema(
 
 connectionRequestSchema.index({fromUserId : 1, toUserId : 1});   // compound index  for faster query performance
 
-connectionRequestSchema.pre("save", async function(next){
-    const connectionRequest = this;
-    if(connectionRequest.fromUserId.equals(connectionRequest.toUserId)){
-        throw new Error("You cannot send connection request to yourself");
-    }
-    next(err);
-})
+// connectionRequestSchema.pre("save", async function(next){
+//     const connectionRequest = this;
+//     if(connectionRequest.fromUserId.equals(connectionRequest.toUserId)){
+//         throw new Error("You cannot send connection request to yourself");
+//     }
+//     next();
+// })
 
 const connectionRequestModel = new mongoose.model("connectionRequest",connectionRequestSchema);
 module.exports = connectionRequestModel;
