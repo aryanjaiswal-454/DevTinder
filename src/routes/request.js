@@ -39,6 +39,7 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth, async (req,res)=>
                 {fromUserId : toUserId, toUserId: fromUserId},
             ],
         });
+
         if(existingConnectionRequest) 
             return res.status(400).json({"ERROR" : "Connection request already exists between these users"});
 
@@ -48,7 +49,9 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth, async (req,res)=>
             status,
         })
 
+
         const data = await connectionRequestObj.save();
+
         res.json({
             message : "Connection request sent successfully",
             data,
@@ -77,11 +80,15 @@ requestRouter.post("/request/review/:status/:requestId",userAuth, async (req,res
             toUserId : loggedInUser._id,
             status : "intrested",
         });
+
         if(!connectionRequest)
             return res.status(400).json({"ERROR" : "Invalid connection request"});
 
         connectionRequest.status = status;
+
+
         const data = await connectionRequest.save();
+        
         res.json(
             {
                 "message" : "Connection request "+status,
