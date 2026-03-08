@@ -1,46 +1,53 @@
-DevTinder 🚀
+# DevTinder 🚀
 
-DevTinder is a developer networking platform inspired by Tinder.
-It allows developers to discover, connect, and collaborate with other developers based on shared interests, skills, and projects. Instead of dating, the goal is building meaningful developer connections.
+DevTinder is a **developer networking platform** inspired by Tinder.
+It allows developers to discover, connect, and collaborate with other developers based on shared interests, skills, and projects. Instead of dating, the goal is **building meaningful developer connections**.
 
-🌟 Features
+---
 
-👤 Developer Profiles
-Users can create and manage their developer profiles.
+## 🌟 Features
 
-🤝 Connection Requests
-Send and receive connection requests with other developers.
+* 👤 Developer Profiles
+  Users can create and manage their developer profiles.
 
-🔐 Authentication
-Secure login and signup system using JWT.
+* 🤝 Connection Requests
+  Send and receive connection requests with other developers.
 
-🔎 Explore Developers
-Browse profiles and discover developers with similar interests.
+* 🔐 Authentication
+  Secure login and signup system using JWT.
 
-✏️ Profile Editing
-Update bio, skills, and other profile details.
+* 🔎 Explore Developers
+  Browse profiles and discover developers with similar interests.
 
-🛠 Tech Stack
+* ✏️ Profile Editing
+  Update bio, skills, and other profile details.
 
-Frontend
+---
 
-JavaScript
+## 🛠 Tech Stack
 
-Backend
+### Frontend
 
-Node.js
-Express.js
+* JavaScript
 
-Database
+### Backend
 
-MongoDB
+* Node.js
+* Express.js
 
-Authentication
+### Database
 
-JSON Web Token (JWT)
+* MongoDB
 
-📂 Project Structure
+### Authentication
 
+* JSON Web Token (JWT)
+
+---
+
+## 📂 Project Structure
+
+```
 DevTinder
 │
 ├── src
@@ -52,19 +59,23 @@ DevTinder
 ├── package.json
 ├── package-lock.json
 └── README.md
+```
 
-🚀 Future Improvements
+---
 
-Real-time chat between developers
-Swipe-style UI
-Notifications for connection requests
-Build interactive UI/UX
+## 🚀 Future Improvements
 
-Cloud deployment
+* Real-time chat between developers
+* Swipe-style UI
+* Notifications for connection requests
+* Improved UI/UX
+* Cloud deployment
 
-👨‍💻 Author
+---
 
-Aryan Jaiswal
+## 👨‍💻 Author
+
+**Aryan Jaiswal**
 Computer Science Student
 
 GitHub:
