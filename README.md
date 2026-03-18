@@ -29,6 +29,7 @@ It allows developers to discover, connect, and collaborate with other developers
 ### Frontend
 
 * JavaScript
+* ReactJS
 
 ### Backend
 
