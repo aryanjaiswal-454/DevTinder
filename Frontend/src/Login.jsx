@@ -1,7 +1,24 @@
-import {useState} from "react"
+import {useState} from "react";
+import axios from "axios"
 const Login = () => {
-    const [emailId, setEmailId] = useState("");
-    const [password, setPassword] = useState("");
+    const [emailId, setEmailId] = useState("aryan@gmail.com");
+    const [password, setPassword] = useState("Aryan@123");
+
+    const handleLogin = async()=>{
+        try {const res = await axios.post("http://localhost:3000/login",
+            {
+                emailId,
+                password,
+            },
+            {
+                withCredentials: true,
+            }
+        );
+        console.log(res);}
+        catch(err){
+            console.log(err);
+        }
+    }
     return (
         <div className="flex justify-center my-10">
             <div className="card bg-base-300 w-96 shadow-sm">
@@ -16,13 +33,14 @@ const Login = () => {
                         </fieldset>
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend my-1 font-normal text-base">Password</legend>
-                            <input type="password" value={password} className="input input-bordered w-full px-3"  
+                            <input type="text" value={password} className="input input-bordered w-full px-3"  
                             onChange={(e)=> setPassword(e.target.value)}
                             />
                         </fieldset>
                     </div>
                     <div className="card-actions justify-center py-3">
-                        <button className="px-4 py-2 rounded-lg bg-blue-500 text-white shadow-md shadow-blue-500/40 hover:bg-blue-600 transition">
+                        <button className="px-4 py-2 rounded-lg bg-blue-500 text-white shadow-md shadow-blue-500/40 hover:bg-blue-600 transition"
+                        onClick={handleLogin}>
                             Login
                         </button>
                     </div>
