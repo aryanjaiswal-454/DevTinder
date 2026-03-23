@@ -51,9 +51,11 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth, async (req,res)=>
 
 
         const data = await connectionRequestObj.save();
-
+        const message = status==="ignored" ?
+        `${fromUserId.firstName} ignored ${toUserId.firstName}` :
+        `${fromUserId.firstName} is intrested in ${toUserId.firstName}` ;
         res.json({
-            message : "Connection request sent successfully",
+            message : message,
             data,
         })
     }
