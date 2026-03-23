@@ -1,7 +1,7 @@
-// Status --- ignore, intrested, accepted, rejected
+// Status --- ignore, interested, accepted, rejected
 
 // ## requestRouter
-// - POST /request/send/intrested/:userId
+// - POST /request/send/interested/:userId
 // - POST /request/send/ignored/:userId
 
 // - POST /request/review/accepted/:userId
@@ -13,7 +13,7 @@ const ConnectionRequest = require("../models/connectionRequest.js");
 const User = require("../models/user.js");
 const requestRouter = express.Router();
 
-// - POST /request/send/intrested/:userId
+// - POST /request/send/interested/:userId
 // - POST /request/send/ignored/:userId
 requestRouter.post(
   "/request/send/:status/:toUserId",
@@ -25,7 +25,7 @@ requestRouter.post(
       const toUserId = req.params.toUserId;
       const status = req.params.status;
 
-      const allowedStatus = ["ignored", "intrested"];
+      const allowedStatus = ["ignored", "interested"];
       if (!allowedStatus.includes(status))
         return res.status(400).json({ ERROR: "Invalid status type" });
 
@@ -64,7 +64,7 @@ requestRouter.post(
       const message =
         status === "ignored"
           ? `${fromUser.firstName} ignored ${toUser.firstName}`
-          : `${fromUser.firstName} is intrested in ${toUser.firstName}`;
+          : `${fromUser.firstName} is interested in ${toUser.firstName}`;
       res.json({
         message: message,
         data,
@@ -93,7 +93,7 @@ requestRouter.post(
       const connectionRequest = await ConnectionRequest.findOne({
         _id: requestId,
         toUserId: loggedInUser._id,
-        status: "intrested",
+        status: "interested",
       });
 
       if (!connectionRequest)
