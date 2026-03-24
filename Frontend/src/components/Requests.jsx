@@ -2,36 +2,37 @@ import React, { useEffect } from "react";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { addConnections } from "../utils/connectionSlice";
+import { addRequests } from "../utils/requestSlice";
 
-const Connections = () => {
+const Requests = () => {
+  const requests = useSelector((store) => store.requests);
   const dispatch = useDispatch();
-  const connections = useSelector((store) => store.connections);
-  const fetchConnections = async () => {
+  const fetchRequests = async () => {
     try {
-      const res = await axios.get(BASE_URL + "/user/connections", {
+      const res = await axios.get(BASE_URL + "/user/requests/recieved", {
         withCredentials: true,
       });
-      dispatch(addConnections(res?.data?.data));
+      dispatch(addRequests(res?.data?.recievedRequests));
     } catch (err) {
       console.log(err.message);
     }
   };
+
   useEffect(() => {
-    fetchConnections();
+    fetchRequests();
   }, []);
 
-  if (!connections) return;
-  if (connections.length === 0) return <h1>No connections found</h1>;
+  if (!requests) return;
+  if (requests.length === 0) return <h1>No requests found</h1>;
   return (
     <div className="text-center my-10">
-      <h1 className="font-bold text-3xl mb-4">Connections</h1>
-      {connections.map((connection) => {
+      <h1 className="font-bold text-3xl mb-4">Connection Requests</h1>
+      {requests.map((request) => {
         const { _id, firstName, lastName, age, gender, about, photoUrl } =
-          connection;
+          request.fromUserId;
         return (
           <div key={_id} className="flex justify-center">
-            <div className="flex items-center m-1 p-1 w-full max-w-lg bg-gray-800 rounded-xl shadow-md">
+            <div className="flex items-center m-1 p-1 w-full max-w-xl bg-gray-800 rounded-xl shadow-md">
               <div className="flex-shrink-0">
                 <img
                   alt="photo"
@@ -53,6 +54,14 @@ const Connections = () => {
                   {about}
                 </h2>
               </div>
+              <div className="flex flex-col items-end gap-2 ml-auto mr-2">
+                <button className="btn btn-sm btn-success bg-success w-20">
+                  Accept
+                </button>
+                <button className="btn btn-sm btn-error bg-error w-20">
+                  Reject
+                </button>
+              </div>
             </div>
           </div>
         );
@@ -61,4 +70,4 @@ const Connections = () => {
   );
 };
 
-export default Connections;
+export default Requests;
