@@ -10,20 +10,20 @@ const Requests = () => {
   const requests = useSelector((store) => store.requests);
   const dispatch = useDispatch();
 
-  const reviewRequest = async(status,_id)=>{
-    try{
-        const res = axios.post(
-            BASE_URL+"/request/review/"+status+"/"+_id,
-            {},{
-                withCredentials:true,
-            },
-        );
-        dispatch(removeRequest(_id));
+  const reviewRequest = async (status, _id) => {
+    try {
+      const res = axios.post(
+        BASE_URL + "/request/review/" + status + "/" + _id,
+        {},
+        {
+          withCredentials: true,
+        },
+      );
+      dispatch(removeRequest(_id));
+    } catch (err) {
+      console.log(err);
     }
-    catch(err){
-        console.log(err)
-    }
-  }
+  };
   const fetchRequests = async () => {
     try {
       const res = await axios.get(BASE_URL + "/user/requests/recieved", {
@@ -40,7 +40,8 @@ const Requests = () => {
   }, []);
 
   if (!requests) return;
-  if (requests.length === 0) return <h1 className="flex justify-center">No requests found</h1>;
+  if (requests.length === 0)
+    return <h1 className="flex justify-center">No requests found</h1>;
   return (
     <div className="text-center my-10">
       <h1 className="font-bold text-3xl mb-4">Connection Requests</h1>
@@ -72,13 +73,15 @@ const Requests = () => {
                 </h2>
               </div>
               <div className="flex flex-col items-end gap-2 ml-auto mr-2">
-                <button className="btn btn-sm btn-success bg-success w-20"
-                onClick={()=>reviewRequest("accepted",request._id)}
+                <button
+                  className="btn btn-sm btn-success bg-success w-20"
+                  onClick={() => reviewRequest("accepted", request._id)}
                 >
                   Accept
                 </button>
-                <button className="btn btn-sm btn-error bg-error w-20"
-                onClick={()=>reviewRequest("rejected",request._id)}
+                <button
+                  className="btn btn-sm btn-error bg-error w-20"
+                  onClick={() => reviewRequest("rejected", request._id)}
                 >
                   Reject
                 </button>
