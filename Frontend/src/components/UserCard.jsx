@@ -4,11 +4,10 @@ const UserCard = ({ user }) => {
   const { firstName, lastName, photoUrl, age, gender, about } = user;
 
   return (
-    <div className="w-80 bg-gray-900 text-white shadow-lg shadow-green-500/10 rounded-xl overflow-hidden mx-auto border border-gray-700">
+    <div className="w-80 bg-gray-900 text-white shadow-lg shadow-green-500/10 rounded-xl overflow-hidden mx-auto border border-black-800 mx-3">
       
       {/* Image (Fixed rectangular) */}
-      <div className="w-full h-60">
-        <img
+<div className="w-full h-80">        <img
           src={photoUrl}
           alt="profile"
           className="w-full h-full object-cover"

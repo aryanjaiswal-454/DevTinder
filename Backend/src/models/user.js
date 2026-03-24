@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema({
     photoUrl : {
         type : String,
         trim : true,
-        default : "https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-No-Background.png",
+        default : "https://imgs.search.brave.com/Ix1-GRkxAk-RaWwN4ipJrGWovxPjIOpdZ-zGHKDlpyY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNzgv/MjkxLzI0NC9zbWFs/bC9mbGF0LXNpbGhv/dWV0dGUtdXNlci1o/ZWFkLWFuZC1zaG91/bGRlcnMtYXZhdGFy/LWdyYXBoaWMtaWNv/bi12ZWN0b3IuanBn",
         validate(value){
             if(!validator.isURL(value)){
                 throw new Error("Incorrect Photo URL");
