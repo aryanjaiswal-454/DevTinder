@@ -1,22 +1,23 @@
-import React from "react";
-
 const UserCard = ({ user }) => {
   if (!user) return null;
 
   const { firstName, lastName, photoUrl, age, gender, about } = user;
 
   return (
-    <div className="w-72 bg-gray-900 text-white shadow-lg shadow-green-500/10 rounded-xl overflow-hidden mx-auto">
-      {/* Image */}
-      <div className="flex justify-center mt-4">
+    <div className="w-80 bg-gray-900 text-white shadow-lg shadow-green-500/10 rounded-xl overflow-hidden mx-auto border border-gray-700">
+      
+      {/* Image (Fixed rectangular) */}
+      <div className="w-full h-60">
         <img
           src={photoUrl}
-          className="w-40 h-40 rounded-full object-cover border-4 border-gray-700"
+          alt="profile"
+          className="w-full h-full object-cover"
         />
       </div>
 
       {/* Content */}
       <div className="p-4 space-y-2">
+        
         {/* Name */}
         <h2 className="text-lg font-semibold">
           {firstName} {lastName}
@@ -43,9 +44,10 @@ const UserCard = ({ user }) => {
             Interested
           </button>
         </div>
+
       </div>
     </div>
   );
 };
 
-export default UserCard;
+export default UserCard
