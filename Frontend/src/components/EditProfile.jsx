@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { BASE_URL } from "../utils/constants";
-import UserCard from "./UserCard";
+import UserCard from "./UserCard.jsx";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
@@ -139,6 +139,7 @@ const EditProfile = ({ user }) => {
           <div className="flex justify-center">
             <UserCard
               user={{
+                _id: user._id,
                 firstName,
                 lastName,
                 age,
