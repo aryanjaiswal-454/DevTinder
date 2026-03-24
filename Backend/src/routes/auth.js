@@ -12,7 +12,7 @@ const {validateSignUpData} = require("../utils/validation.js");
 const authRouter = express.Router();
 
 authRouter.post("/signup",async (req,res)=>{
-    const {firstName, lastName, emailId, password} = req.body
+    const {firstName, lastName, emailId, password, age, gender, skills, photoUrl} = req.body
     try{
         // Validation of data
         validateSignUpData(req)
@@ -27,7 +27,13 @@ authRouter.post("/signup",async (req,res)=>{
             lastName,
             emailId,
             password : passwordHash,
+            age,
+            gender,
+            photoUrl,
+            skills
+
         });
+        
         await user.save();
         res.send("User added successfully");
     } catch(err){
