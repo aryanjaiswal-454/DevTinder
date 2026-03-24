@@ -34,6 +34,7 @@ const NavBar = () => {
       <div className="flex items-center gap-4">
         {user && (
           <>
+          {/* <input type="checkbox" value="synthwave" className="toggle theme-controller" /> */}
             <p className="my-2 mx-0">Welcome, {user.firstName}</p>
             <div className="dropdown dropdown-end mx-2 ">
               <div
@@ -64,13 +65,14 @@ const NavBar = () => {
                 </li>
 
                 <li>
-                  <a
+                  <Link
                     className="rounded-lg px-3 py-2 transition-all duration-200 
                     hover:bg-white/10 hover:backdrop-blur-md 
                     hover:shadow-lg hover:scale-[1.02]"
+                    to="/connections"
                   >
-                    Settings
-                  </a>
+                    Connections
+                  </Link>
                 </li>
 
                 <li>

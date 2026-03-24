@@ -30,10 +30,10 @@ const Feed = () => {
 
   return (
     <div className="flex justify-center my-10">
-      {feed.map((user) => (
+      {/* {feed.map((user) => (
         <UserCard user={user} />
-      ))}
-      {/* <UserCard user={feed[0]} /> */}
+      ))} */}
+      <UserCard user={feed[0]} />
     </div>
   );
 };
