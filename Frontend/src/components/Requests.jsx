@@ -41,7 +41,7 @@ const Requests = () => {
 
   if (!requests) return;
   if (requests.length === 0)
-    return <h1 className="flex justify-center">No requests found</h1>;
+    return <h1 className="flex justify-center my-10">No requests found</h1>;
   return (
     <div className="text-center my-10">
       <h1 className="font-bold text-3xl mb-4">Connection Requests</h1>
