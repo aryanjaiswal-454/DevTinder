@@ -46,24 +46,6 @@ It allows developers to discover, connect, and collaborate with other developers
 
 ---
 
-## 📂 Project Structure
-
-```
-DevTinder
-│
-├── src
-│   ├── models
-│   ├── routes
-│   ├── middleware
-│   └── app.js
-│
-├── package.json
-├── package-lock.json
-└── README.md
-```
-
----
-
 ## 🚀 Future Improvements
 
 * Real-time chat between developers
