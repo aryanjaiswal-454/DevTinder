@@ -10,7 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [isLoginForm, setIsLoginForm] = useState(false);
+  const [isLoginForm, setIsLoginForm] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -33,15 +33,33 @@ const Login = () => {
       setError(err.response?.data || "Something went wrong");
     }
   };
+  const handleSignUp = async ()=>{
+    try{
+    const res = await axios.post(
+      BASE_URL+"/signup",
+      {
+        firstName,lastName,emailId,password
+      },
+      {
+        withCredentials:true,
+      }
+    )
+    dispatch(addUser(res?.data?.data));
+    return navigate("/profile")
+    }
+    catch(err){
+      setError(err?.response?.data || "Something went wrong");
+    }
+  }
   return (
     <div className="flex justify-center my-10">
       <div className="card bg-base-300 w-96 shadow-sm">
         <div className="card-body pt-3 pb-3">
           <h2 className="card-title text-3xl font-semibold justify-center">
-            {isLoginForm ? "Login" : "Signup"}
+            {isLoginForm ? "Login" : "SignUp"}
           </h2>
           <div>
-            {isLoginForm && (
+            {!isLoginForm && (
               <>
                 <fieldset className="fieldset my-3">
                   <legend className="fieldset-legend my-1 font-normal text-base">
@@ -94,7 +112,7 @@ const Login = () => {
           <div className="card-actions justify-center py-3">
             <button
               className="px-4 py-2 rounded-lg bg-blue-500 text-white shadow-md shadow-blue-500/40 hover:bg-blue-600 transition"
-              onClick={handleLogin}
+              onClick={isLoginForm?handleLogin:handleSignUp}
             >
               {isLoginForm ? "Login" : "Signup"}
             </button>
@@ -102,7 +120,10 @@ const Login = () => {
 
           <p
             className="m-auto cursor-pointer text-sm text-center"
-            onClick={() => setIsLoginForm(!isLoginForm)}
+            onClick={() => {
+              setIsLoginForm(!isLoginForm);
+              setError("")
+            }}
           >
             {isLoginForm ? (
               <>

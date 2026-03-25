@@ -3,66 +3,82 @@
 // - POST /login
 // - POST /logout
 
-const express = require('express');
-const bcrypt= require("bcrypt");
-const validator = require("validator")
-const User = require("../models/user.js")
-const {validateSignUpData} = require("../utils/validation.js");
+const express = require("express");
+const bcrypt = require("bcrypt");
+const validator = require("validator");
+const User = require("../models/user.js");
+const { validateSignUpData } = require("../utils/validation.js");
 
 const authRouter = express.Router();
 
-authRouter.post("/signup",async (req,res)=>{
-    const {firstName, lastName, emailId, password, age, gender, skills, photoUrl} = req.body
-    try{
-        // Validation of data
-        validateSignUpData(req)
+authRouter.post("/signup", async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    emailId,
+    password,
+    age,
+    gender,
+    skills,
+    photoUrl,
+  } = req.body;
+  try {
+    // Validation of data
+    validateSignUpData(req);
 
-        //  Encrypting Password
-        const passwordHash = await bcrypt.hash(password,10);
+    //  Encrypting Password
+    const passwordHash = await bcrypt.hash(password, 10);
 
-        
-        // Saving user details to the database
-        const user = new User({
-            firstName,
-            lastName,
-            emailId,
-            password : passwordHash,
-            age,
-            gender,
-            photoUrl,
-            skills
+    // Saving user details to the database
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+      age,
+      gender,
+      photoUrl,
+      skills,
+    });
 
-        });
-        
-        await user.save();
-        res.send("User added successfully");
-    } catch(err){
-        res.status(400).send("ERROR : "+err.message)
-    }
-})
+    const savedUser = await user.save();
+    const token = await savedUser.getJWT();
 
-authRouter.post("/login",async (req,res)=>{
-    try{
-        const {emailId, password} = req.body;
-        if(!validator.isEmail(emailId)) throw new Error("Invalid credentials");
-        const user = await User.findOne({emailId:emailId});
-        if(!user) throw new Error("Invalid credentials");
-        const isPasswordValid = await user.validatePassword(password);
-        if(isPasswordValid){
-            const token = await user.getJWT();
-            res.cookie("token",token);
-            res.send(user);
-        }
-        else throw new Error("Invalid credentials");
-    }
-    catch(err){
-        res.status(401).send("ERROR : "+err.message);
-    }
-})
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 * 3600000),
+    });
 
-authRouter.post("/logout",(req,res)=>{
-    res.clearCookie("token");
-    res.send("Logged out successfully");
-})
+    res.json({
+      message: "User added successfully",
+      data: savedUser,
+    });
+  } catch (err) {
+    res.status(400).send("ERROR : " + err.message);
+  }
+});
+
+authRouter.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+    if (!validator.isEmail(emailId)) throw new Error("Invalid credentials");
+    const user = await User.findOne({ emailId: emailId });
+    if (!user) throw new Error("Invalid credentials");
+    const isPasswordValid = await user.validatePassword(password);
+    if (isPasswordValid) {
+      const token = await user.getJWT();
+      res.cookie("token", token, {
+        expires: new Date(Date.now() + 8 * 3600000),
+      });
+      res.send(user);
+    } else throw new Error("Invalid credentials");
+  } catch (err) {
+    res.status(401).send("ERROR : " + err.message);
+  }
+});
+
+authRouter.post("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.send("Logged out successfully");
+});
 
 module.exports = authRouter;
