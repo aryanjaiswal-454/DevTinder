@@ -53,7 +53,7 @@ authRouter.post("/verify-otp", async (req, res) => {
     }
     const record = await OTP.findOne({ email: emailId }).sort({
       createdAt: -1,
-    }); 
+    });
     if (!record || record.otp !== cleanOtp) {
       return res.status(400).send("Invalid OTP");
     }
@@ -80,6 +80,8 @@ authRouter.post("/verify-otp", async (req, res) => {
     res.cookie("token", token, {
       expires: new Date(Date.now() + 8 * 3600000),
       httpOnly: true,
+      secure: true,
+      sameSite: "None",
     });
 
     res.send({
@@ -90,7 +92,6 @@ authRouter.post("/verify-otp", async (req, res) => {
     res.status(400).send("ERROR: " + err.message);
   }
 });
-
 
 authRouter.post("/login", async (req, res) => {
   try {
