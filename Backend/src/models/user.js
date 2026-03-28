@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema(
           throw new Error("Password is too weak");
         }
       },
-      select: false,
+      // select: false,
     },
     age: {
       type: Number,

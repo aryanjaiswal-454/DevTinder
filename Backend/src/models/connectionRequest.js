@@ -26,7 +26,7 @@ const connectionRequestSchema = new mongoose.Schema(
   },
 );
 
-connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 }, { unique: true }); // compound index  for faster query performance
+connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 }); // compound index  for faster query performance
 
 connectionRequestSchema.pre("save", async function(next){
     const connectionRequest = this;
