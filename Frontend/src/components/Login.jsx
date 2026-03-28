@@ -36,6 +36,7 @@ const Login = () => {
       return navigate("/");
     } catch (err) {
       setError(err.response?.data || "Something went wrong");
+      setTimeout(()=>setError(""), 5000);
     }
   };
   const sendOtp = async () => {

@@ -76,6 +76,7 @@ const userSchema = new mongoose.Schema(
     },
     skills: {
       type: [String],
+      required: true,
       validate: [
         {
           validator: function (arr) {
