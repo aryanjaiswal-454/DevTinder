@@ -8,10 +8,11 @@ const cors = require("cors");
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true,
-  methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  origin: [
+    "http://localhost:5173",
+    "https://devtinder-connectandgrow.netlify.app"
+  ],
+  credentials: true
 }));
 
 app.use(express.json());
