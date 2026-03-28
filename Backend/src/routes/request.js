@@ -57,17 +57,10 @@ requestRouter.post(
         toUserId,
         status,
       });
-      const fromUser = await User.findById(fromUserId);
-      const toUser = await User.findById(toUserId);
-
       const data = await connectionRequestObj.save();
-      const message =
-        status === "ignored"
-          ? `${fromUser.firstName} ignored ${toUser.firstName}`
-          : `${fromUser.firstName} is interested in ${toUser.firstName}`;
       res.json({
-        message: message,
         data,
+        message: "Connection request sent with status : " + status,
       });
     } catch (err) {
       res.status(401).send("ERROR : " + err.message);
