@@ -84,7 +84,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
       .limit(limit);
     res.send(users);
   } catch (err) {
-    res.status(400).send();
+    res.status(400).send(err.message);
   }
 });
 

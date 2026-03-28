@@ -25,16 +25,17 @@ const NavBar = () => {
     }
   };
   return (
-    <div className="navbar bg-base-300 shadow-sm">
-      <div className="flex-1">
-        <Link to="/" className="btn btn-ghost text-xl">
-          DevTinder 👨‍💻
-        </Link>
-      </div>
+    <div
+      style={{ backgroundColor: "#161921" }}
+      className="navbar shadow-md border-b border-white/10 flex justify-between items-center"
+    >
+      <Link to="/" style={{ backgroundColor: "#161921" }} className="btn btn-ghost text-xl border-none hover:border-none hover:bg-error/10 outline-none focus:outline-none ring-0 focus:ring-0">
+        <img src="/DevTinderLogo.png" alt="logo" className="h-10 w-auto mr-4" />{" "}
+        DevTinder
+      </Link>
       <div className="flex items-center gap-4">
         {user && (
           <>
-            {/* <input type="checkbox" value="synthwave" className="toggle theme-controller" /> */}
             <p className="my-2 mx-0">Welcome, {user.firstName}</p>
             <div className="dropdown dropdown-end mx-2 ">
               <div

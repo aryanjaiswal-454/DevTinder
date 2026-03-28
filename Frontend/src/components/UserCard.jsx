@@ -5,8 +5,8 @@ import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "../utils/feedSlice";
 
 const UserCard = ({ user }) => {
-  // if (!user) return null;
-  const { _id, firstName, lastName, photoUrl, age, gender, about } = user;
+  const { _id, firstName, lastName, photoUrl, age, gender, about, skills } =
+    user;
   const dispatch = useDispatch();
   const handleSendRequest = async (status, userId) => {
     try {
@@ -22,7 +22,6 @@ const UserCard = ({ user }) => {
   };
   return (
     <div className="w-80 bg-gray-900 text-white shadow-lg shadow-green-500/10 rounded-xl overflow-hidden mx-auto border border-black-800 mx-3">
-      {/* Image (Fixed rectangular) */}
       <div className="w-full h-80">
         {" "}
         <img
@@ -32,26 +31,35 @@ const UserCard = ({ user }) => {
         />
       </div>
 
-      {/* Content */}
       <div className="p-4 space-y-2">
-        {/* Name */}
         <h2 className="text-lg font-semibold">
           {firstName} {lastName}
         </h2>
 
-        {/* Age + Gender */}
         {age && gender && (
           <p className="text-xs text-gray-400">
             {age} • {gender}
           </p>
         )}
+        {skills && skills.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            Skills :
+            {skills.map((skill, index) => (
+              <span
+                key={index}
+                className="px-2 py-1 text-xs rounded-md 
+        bg-gray-800 text-white border border-gray-600"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        )}
 
-        {/* About */}
         <p className="text-sm text-gray-500 line-clamp-2">
           {about || "No bio available"}
         </p>
 
-        {/* Buttons */}
         <div className="flex gap-2 mt-3">
           <button
             className="flex-1 py-2 rounded-lg border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"

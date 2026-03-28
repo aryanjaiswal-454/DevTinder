@@ -12,6 +12,8 @@ const EditProfile = ({ user }) => {
   const [gender, setGender] = useState(user.gender || "");
   const [about, setAbout] = useState(user.about || "");
   const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
+  const [skills, setSkills] = useState(user.skills || []);
+  const [skillInput, setSkillInput] = useState("");
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
   const dispatch = useDispatch();
@@ -27,6 +29,7 @@ const EditProfile = ({ user }) => {
           gender,
           about,
           photoUrl,
+          skills,
         },
         {
           withCredentials: true,
@@ -41,9 +44,24 @@ const EditProfile = ({ user }) => {
       setError(err.response?.data || err.message);
     }
   };
+
+  const handleAddSkill = () => {
+    if (!skillInput.trim()) return;
+
+    if (skills.length >= 10) return; // limit
+
+    if (skills.includes(skillInput.trim().toLowerCase())) return; // no duplicates
+
+    setSkills([...skills, skillInput.trim().toLowerCase()]);
+    setSkillInput("");
+  };
+
+  const handleRemoveSkill = (skillToRemove) => {
+    setSkills(skills.filter((s) => s !== skillToRemove));
+  };
   return (
     <>
-      <div className="min-h-screen flex justify-center items-center px-6 py-10 bg-base-200">
+      <div className="min-h-screen flex justify-center items-center px-6 py-10 bg-base-200 mb-20">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-16">
           <div className="flex justify-center">
             <div className="card bg-base-300 w-96 shadow-sm mb-20">
@@ -54,18 +72,18 @@ const EditProfile = ({ user }) => {
                 <div>
                   <fieldset className="fieldset my-3">
                     <legend className="fieldset-legend my-1 font-normal text-base">
-                      First Name
+                      First Name*
                     </legend>
                     <input
                       type="text"
                       value={firstName}
-                      className="input input-bordered w-full px-3"
+                      className="input input-bord ered w-full px-3"
                       onChange={(e) => setFirstName(e.target.value)}
                     />
                   </fieldset>
                   <fieldset className="fieldset my-3">
                     <legend className="fieldset-legend my-1 font-normal text-base">
-                      Last Name
+                      Last Name*
                     </legend>
                     <input
                       type="text"
@@ -79,7 +97,7 @@ const EditProfile = ({ user }) => {
                       Age
                     </legend>
                     <input
-                      type="number"
+                      type="number" min="0" max="100" 
                       value={age}
                       className="input input-bordered w-full px-3"
                       onChange={(e) => setAge(e.target.value)}
@@ -87,7 +105,7 @@ const EditProfile = ({ user }) => {
                   </fieldset>
                   <fieldset className="fieldset my-3">
                     <legend className="fieldset-legend my-1 font-normal text-base">
-                      Gender
+                      Gender*
                     </legend>
 
                     <select
@@ -100,6 +118,59 @@ const EditProfile = ({ user }) => {
                       <option value="female">Female</option>
                       <option value="other">Other</option>
                     </select>
+                  </fieldset>
+                  <fieldset className="fieldset my-3">
+                    <legend className="fieldset-legend my-1 font-normal text-base">
+                      Skills
+                    </legend>
+
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={skillInput}
+                        placeholder="Enter a skill (e.g. React)"
+                        className="input input-bordered w-full px-3"
+                        onChange={(e) => setSkillInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleAddSkill();
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        className="px-3 rounded-lg bg-green-500 text-white hover:bg-green-600"
+                        onClick={handleAddSkill}
+                      >
+                        Add
+                      </button>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {skills.map((skill, index) => (
+                        <span
+                          key={index}
+                          className="flex items-center gap-1 px-3 py-1 text-xs rounded-full 
+        bg-gray-800 text-green-400 border border-green-500/30"
+                        >
+                          {skill}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSkill(skill)}
+                            className="text-red-400 hover:text-red-600 ml-1"
+                          >
+                            ✕
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+
+                    {skills.length >= 10 && (
+                      <p className="text-xs text-red-400 mt-1">
+                        Maximum 10 skills allowed
+                      </p>
+                    )}
                   </fieldset>
                   <fieldset className="fieldset my-3">
                     <legend className="fieldset-legend my-1 font-normal text-base">
@@ -146,6 +217,7 @@ const EditProfile = ({ user }) => {
                 gender,
                 about,
                 photoUrl,
+                skills,
               }}
             />
           </div>

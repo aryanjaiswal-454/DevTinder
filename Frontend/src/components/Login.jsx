@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
@@ -14,6 +14,11 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [step, setStep] = useState(1);
+  const [otp, setOtp] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState(30);
 
   const handleLogin = async () => {
     try {
@@ -33,27 +38,72 @@ const Login = () => {
       setError(err.response?.data || "Something went wrong");
     }
   };
-  const handleSignUp = async ()=>{
-    try{
-    const res = await axios.post(
-      BASE_URL+"/signup",
-      {
-        firstName,lastName,emailId,password
-      },
-      {
-        withCredentials:true,
+  const sendOtp = async () => {
+    try {
+      setLoading(true);
+      setOtp("");
+      if (!emailId || !firstName || !lastName || !password) {
+        setLoading(false);
+        return setError("All fields are required");
       }
-    )
-    dispatch(addUser(res?.data?.data));
-    return navigate("/profile")
+
+      await axios.post(BASE_URL + "/send-otp", {
+        emailId,
+        firstName,
+        lastName,
+        password,
+      });
+
+      setStep(2);
+      setMessage("OTP sent to your email");
+      setError("");
+    } catch (err) {
+      setError(err?.response?.data || "Failed to send OTP");
+    } finally {
+      setLoading(false);
     }
-    catch(err){
-      setError(err?.response?.data || "Something went wrong");
+  };
+  const verifyOtp = async () => {
+    if (!otp || otp.length < 6) {
+      return setError("Please enter valid OTP");
     }
-  }
+    try {
+      setLoading(true);
+      if (otp === "") throw new Error("OTP is required!");
+      const res = await axios.post(
+        BASE_URL + "/verify-otp",
+        {
+          emailId,
+          password,
+          firstName,
+          lastName,
+          otp,
+        },
+        { withCredentials: true },
+      );
+
+      dispatch(addUser(res?.data?.data));
+      setMessage("");
+      navigate("/profile");
+    } catch (err) {
+      setError(err?.response?.data || "Invalid OTP");
+      setMessage("");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    if (step === 2 && timer > 0) {
+      const interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [step, timer]);
   return (
-    <div className="flex justify-center my-10">
-      <div className="card bg-base-300 w-96 shadow-sm">
+    <div className="flex justify-center my-10 pb-10">
+      <div className="card bg-base-300 w-96 shadow-sm ">
         <div className="card-body pt-3 pb-3">
           <h2 className="card-title text-3xl font-semibold justify-center">
             {isLoginForm ? "Login" : "SignUp"}
@@ -66,7 +116,7 @@ const Login = () => {
                     First Name
                   </legend>
                   <input
-                    type="text"
+                    type="text" required
                     value={firstName}
                     className="input input-bordered w-full px-3"
                     onChange={(e) => setFirstName(e.target.value)}
@@ -77,7 +127,7 @@ const Login = () => {
                     Last Name
                   </legend>
                   <input
-                    type="text"
+                    type="text" required
                     value={lastName}
                     className="input input-bordered w-full px-3"
                     onChange={(e) => setLastName(e.target.value)}
@@ -90,7 +140,7 @@ const Login = () => {
                 Email ID
               </legend>
               <input
-                type="email"
+                type="email" required
                 value={emailId}
                 className="input input-bordered w-full px-3"
                 onChange={(e) => setEmailId(e.target.value)}
@@ -101,28 +151,80 @@ const Login = () => {
                 Password
               </legend>
               <input
-                type="text"
+                type="password" required
                 value={password}
                 className="input input-bordered w-full px-3"
                 onChange={(e) => setPassword(e.target.value)}
               />
             </fieldset>
+            {!isLoginForm && step === 2 && (
+              <fieldset className="fieldset my-3 py-3">
+                <legend className="fieldset-legend">Enter OTP</legend>
+                <input
+                  type="text"
+                  autoFocus
+                  maxLength="6"
+                  value={otp}
+                  className="input input-bordered w-full px-3"
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "");
+                    setError("")
+                    setMessage("")
+                    setOtp(value);
+                  }}
+                />
+              </fieldset>
+            )}
+            {!isLoginForm &&
+              step === 2 &&
+              (timer > 0 ? (
+                <p className="text-gray-400 text-sm text-center">
+                  Resend OTP in {timer}s
+                </p>
+              ) : (
+                <p
+                  className="text-blue-500 text-sm cursor-pointer text-center"
+                  onClick={() => {
+                    sendOtp();
+                    setTimer(30);
+                  }}
+                >
+                  Resend OTP
+                </p>
+              ))}
           </div>
-          <p className="text-red-500 text-center">{error}</p>
+          {error && <p className="text-red-500 text-center">{error}</p>}
+          {!error && message && (
+            <p className="text-green-500 text-center">{message}</p>
+          )}
           <div className="card-actions justify-center py-3">
             <button
-              className="px-4 py-2 rounded-lg bg-blue-500 text-white shadow-md shadow-blue-500/40 hover:bg-blue-600 transition"
-              onClick={isLoginForm?handleLogin:handleSignUp}
+              disabled={loading}
+              className={`px-4 py-2 rounded-lg text-white shadow-md transition ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600 cursor-pointer"
+              }`}
+              onClick={
+                isLoginForm ? handleLogin : step === 1 ? sendOtp : verifyOtp
+              }
             >
-              {isLoginForm ? "Login" : "Signup"}
+              {loading
+                ? "Please wait..."
+                : isLoginForm
+                  ? "Login"
+                  : step === 1
+                    ? "Send OTP"
+                    : "Verify & Signup"}
             </button>
           </div>
-
           <p
             className="m-auto cursor-pointer text-sm text-center"
             onClick={() => {
               setIsLoginForm(!isLoginForm);
-              setError("")
+              setError("");
+              setMessage("");
+              setStep(1);
             }}
           >
             {isLoginForm ? (

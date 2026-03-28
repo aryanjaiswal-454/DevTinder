@@ -8,54 +8,133 @@ const bcrypt = require("bcrypt");
 const validator = require("validator");
 const User = require("../models/user.js");
 const { validateSignUpData } = require("../utils/validation.js");
-
+const OTP = require("../models/otp");
+const otpGenerator = require("otp-generator");
+const sendEmail = require("../utils/sendEmail");
 const authRouter = express.Router();
 
-authRouter.post("/signup", async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    emailId,
-    password,
-    age,
-    gender,
-    skills,
-    photoUrl,
-  } = req.body;
+authRouter.post("/send-otp", async (req, res) => {
   try {
-    // Validation of data
+    const { emailId } = req.body;
+
     validateSignUpData(req);
 
-    //  Encrypting Password
+    const existingUser = await User.findOne({ emailId });
+    if (existingUser) {
+      return res.status(400).send("User already exists");
+    }
+
+    await OTP.deleteMany({ email: emailId });
+
+    const otp = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      lowerCaseAlphabets: false,
+      specialChars: false,
+    });
+
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+    await OTP.create({ email: emailId, otp: otp.trim(), expiresAt });
+
+    await sendEmail(emailId, otp);
+
+    res.send("OTP sent successfully");
+  } catch (err) {
+    res.status(400).send("ERROR: " + err.message);
+  }
+});
+authRouter.post("/verify-otp", async (req, res) => {
+  try {
+    const { emailId, otp, password, firstName, lastName } = req.body;
+    validateSignUpData(req);
+    const cleanOtp = String(otp).trim();
+    if (!/^\d{6}$/.test(cleanOtp)) {
+      throw new Error("Invalid OTP format");
+    }
+    const record = await OTP.findOne({ email: emailId }).sort({
+      createdAt: -1,
+    }); 
+    if (!record || record.otp !== cleanOtp) {
+      return res.status(400).send("Invalid OTP");
+    }
+
+    if (record.expiresAt < new Date()) {
+      return res.status(400).send("OTP expired");
+    }
+
+    await OTP.deleteMany({ email: emailId });
+
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Saving user details to the database
     const user = new User({
       firstName,
       lastName,
       emailId,
       password: passwordHash,
-      age,
-      gender,
-      photoUrl,
-      skills,
     });
 
     const savedUser = await user.save();
+
     const token = await savedUser.getJWT();
 
     res.cookie("token", token, {
       expires: new Date(Date.now() + 8 * 3600000),
+      httpOnly: true,
     });
 
-    res.json({
-      message: "User added successfully",
+    res.send({
+      message: "User registered successfully",
       data: savedUser,
     });
   } catch (err) {
-    res.status(400).send("ERROR : " + err.message);
+    res.status(400).send("ERROR: " + err.message);
   }
 });
+// authRouter.post("/signup", async (req, res) => {
+//   const {
+//     firstName,
+//     lastName,
+//     emailId,
+//     password,
+//     age,
+//     gender,
+//     skills,
+//     photoUrl,
+//   } = req.body;
+//   try {
+//     // Validation of data
+//     validateSignUpData(req);
+
+//     //  Encrypting Password
+//     const passwordHash = await bcrypt.hash(password, 10);
+
+//     // Saving user details to the database
+//     const user = new User({
+//       firstName,
+//       lastName,
+//       emailId,
+//       password: passwordHash,
+//       age,
+//       gender,
+//       photoUrl,
+//       skills,
+//     });
+
+//     const savedUser = await user.save();
+//     const token = await savedUser.getJWT();
+
+//     res.cookie("token", token, {
+//       expires: new Date(Date.now() + 8 * 3600000),
+//     });
+
+//     res.json({
+//       message: "User added successfully",
+//       data: savedUser,
+//     });
+//   } catch (err) {
+//     res.status(400).send("ERROR : " + err.message);
+//   }
+// });
 
 authRouter.post("/login", async (req, res) => {
   try {
