@@ -28,13 +28,11 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     Object.keys(updatedData).forEach((field) => {
       loggedInUser.set(field, updatedData[field]);
     });
-
-    const safeUser = loggedInUser.toObject();
-    delete safeUser.password;
+    await loggedInUser.save();
 
     res.json({
       message: `${loggedInUser.firstName}, your profile is updated successfully`,
-      data: safeUser,
+      data: loggedInUser,
     });
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
