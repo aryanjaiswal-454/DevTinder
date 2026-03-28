@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
       index: true,
       trim: true,
       minLength: 1,
-      maxLength: 30,
+      maxLength: 50,
       validate(value) {
         if (!validator.isEmail(value)) {
           throw new Error("Invalid emailId " + value);
@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema(
           throw new Error("Password is too weak");
         }
       },
+      select: false,
     },
     age: {
       type: Number,
@@ -76,7 +77,6 @@ const userSchema = new mongoose.Schema(
     },
     skills: {
       type: [String],
-      required: true,
       validate: [
         {
           validator: function (arr) {

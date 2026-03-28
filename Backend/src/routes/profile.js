@@ -3,24 +3,24 @@
 // - PATCH /profile/edit
 // - PATCH /profile/password
 
-const express = require('express');
-const {userAuth} = require("../middlewares/auth.js");
-const {validateProfileEditData} = require("../utils/validation.js");
+const express = require("express");
+const { userAuth } = require("../middlewares/auth.js");
+const { validateProfileEditData } = require("../utils/validation.js");
 
 const profileRouter = express.Router();
 
-profileRouter.get("/profile/view",userAuth, async (req,res)=>{
-    try{
-        res.send(req.user);
-    }
-    catch(err){
-        res.status(401).send("ERROR : "+err.message);
-    }
-})
+profileRouter.get("/profile/view", userAuth, async (req, res) => {
+  try {
+    const safeUser = req.user.toObject();
+    delete safeUser.password;
+    res.send(safeUser);
+  } catch (err) {
+    res.status(401).send("ERROR : " + err.message);
+  }
+});
 profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
   try {
-    if (!validateProfileEditData(req))
-      throw new Error("Invalid Edit Request");
+    if (!validateProfileEditData(req)) throw new Error("Invalid Edit Request");
 
     const loggedInUser = req.user;
     const updatedData = req.body;
@@ -29,11 +29,12 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
       loggedInUser.set(field, updatedData[field]);
     });
 
-    await loggedInUser.save();
+    const safeUser = loggedInUser.toObject();
+    delete safeUser.password;
 
     res.json({
       message: `${loggedInUser.firstName}, your profile is updated successfully`,
-      data: loggedInUser,
+      data: safeUser,
     });
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);

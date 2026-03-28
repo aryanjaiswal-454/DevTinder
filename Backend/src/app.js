@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors({
   origin: [
-    // "http://localhost:5173",
+    "http://localhost:5173",
     "https://devtinder-connectandgrow.netlify.app"
   ],
   credentials: true
@@ -21,12 +21,12 @@ app.use(cookieParser());
 const authRouter = require('./routes/auth.js');
 const profileRouter = require('./routes/profile.js');
 const requestRouter = require('./routes/request.js');
-const usertRouter = require('./routes/user.js');
+const userRouter = require('./routes/user.js');
 
 app.use('/',authRouter);
 app.use('/',profileRouter);
 app.use('/',requestRouter);
-app.use('/',usertRouter);
+app.use('/',userRouter);
 // NEVER TRUST req.body BECAUSE IT CAN GET MANY MALICIOUS THINGS IN YOUR DATABASE
 
 connectDB()

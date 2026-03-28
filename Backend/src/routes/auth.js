@@ -15,7 +15,7 @@ const authRouter = express.Router();
 
 authRouter.post("/send-otp", async (req, res) => {
   try {
-    const { emailId } = req.body;
+    const emailId = req.body.emailId?.toLowerCase().trim();
 
     validateSignUpData(req);
 
@@ -45,7 +45,8 @@ authRouter.post("/send-otp", async (req, res) => {
 });
 authRouter.post("/verify-otp", async (req, res) => {
   try {
-    const { emailId, otp, password, firstName, lastName } = req.body;
+    const { otp, password, firstName, lastName } = req.body;
+    const emailId = req.body.emailId?.toLowerCase().trim();
     validateSignUpData(req);
     const cleanOtp = String(otp).trim();
     if (!/^\d{6}$/.test(cleanOtp)) {
@@ -84,9 +85,12 @@ authRouter.post("/verify-otp", async (req, res) => {
       sameSite: "None",
     });
 
+    const safeUser = savedUser.toObject();
+    delete safeUser.password;
+
     res.send({
       message: "User registered successfully",
-      data: savedUser,
+      data: safeUser,
     });
   } catch (err) {
     res.status(400).send("ERROR: " + err.message);
@@ -95,9 +99,10 @@ authRouter.post("/verify-otp", async (req, res) => {
 
 authRouter.post("/login", async (req, res) => {
   try {
-    const { emailId, password } = req.body;
+    const { password } = req.body;
+    const emailId = req.body.emailId?.toLowerCase().trim();
     if (!validator.isEmail(emailId)) throw new Error("Invalid credentials");
-    const user = await User.findOne({ emailId: emailId });
+    const user = await User.findOne({ emailId }).select("+password");
     if (!user) throw new Error("Invalid credentials");
     const isPasswordValid = await user.validatePassword(password);
     if (isPasswordValid) {
@@ -108,7 +113,9 @@ authRouter.post("/login", async (req, res) => {
         secure: true,
         sameSite: "None",
       });
-      res.send(user);
+      const safeUser = user.toObject();
+      delete safeUser.password;
+      res.send(safeUser);
     } else throw new Error("Invalid credentials");
   } catch (err) {
     res.status(401).send("ERROR : " + err.message);
@@ -121,7 +128,6 @@ authRouter.post("/logout", (req, res) => {
     secure: true,
     sameSite: "None",
   });
-  res.send("Logged out successfully");
   res.send("Logged out successfully");
 });
 

@@ -1,5 +1,5 @@
 // ## userRouter
-// - GET /user/requests/recieved
+// - GET /user/requests/received
 // - GET /user/connections
 // - GET /user/feed - gets you  the profile of other users on the platform
 
@@ -11,18 +11,18 @@ const User = require("../models/user.js");
 
 const USER_SAFE_DATA = "firstName lastName photoUrl about skills age gender";
 
-// - GET /user/requests/recieved
-userRouter.get("/user/requests/recieved", userAuth, async (req, res) => {
+// - GET /user/requests/received
+userRouter.get("/user/requests/received", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
-    const recievedRequests = await ConnectionRequest.find({
+    const receivedRequests = await ConnectionRequest.find({
       toUserId: loggedInUser._id,
       status: "interested",
     }).populate("fromUserId", USER_SAFE_DATA);
 
     res.json({
-      message: "Recieved connection requests : " + recievedRequests.length,
-      recievedRequests,
+      message: "Received connection requests : " + receivedRequests.length,
+      receivedRequests,
     });
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
@@ -60,21 +60,22 @@ userRouter.get("/feed", userAuth, async (req, res) => {
     const loggedInUser = req.user;
     const page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit) || 10;
-    if(limit<0) limit=10;
-    if(limit>50) limit = 50;
+    if (limit < 0) limit = 10;
+    if (limit > 50) limit = 50;
     let skip = (page - 1) * limit;
-    if(skip<0) skip=0;
+    if (skip < 0) skip = 0;
 
     const connectionRequests = await ConnectionRequest.find({
       $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
     }).select("fromUserId toUserId");
 
-    const hideUsersFromFeed = new Set();
-    connectionRequests.forEach((req) => {
-      hideUsersFromFeed.add(req.fromUserId.toString());
-      hideUsersFromFeed.add(req.toUserId.toString());
-    });
-    hideUsersFromFeed.add(loggedInUser._id.toString());
+    const hideUsersFromFeed = [
+      ...connectionRequests.flatMap((req) => [
+        req.fromUserId.toString(),
+        req.toUserId.toString(),
+      ]),
+      loggedInUser._id.toString(),
+    ];
 
     const users = await User.find({
       _id: { $nin: Array.from(hideUsersFromFeed) },
