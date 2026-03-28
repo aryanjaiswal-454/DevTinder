@@ -12,7 +12,7 @@ const Requests = () => {
 
   const reviewRequest = async (status, _id) => {
     try {
-      const res = axios.post(
+      const res = await axios.post(
         BASE_URL + "/request/review/" + status + "/" + _id,
         {},
         {
@@ -21,7 +21,7 @@ const Requests = () => {
       );
       dispatch(removeRequest(_id));
     } catch (err) {
-      console.log(err);
+      console.log(err.response?.data || err.message);
     }
   };
   const fetchRequests = async () => {

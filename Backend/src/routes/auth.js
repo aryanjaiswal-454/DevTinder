@@ -83,6 +83,7 @@ authRouter.post("/verify-otp", async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "None",
+      path: "/",
     });
 
     const safeUser = savedUser.toObject();
@@ -112,6 +113,7 @@ authRouter.post("/login", async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: "None",
+        path: "/",
       });
       const safeUser = user.toObject();
       delete safeUser.password;
