@@ -5,6 +5,7 @@ const connectDB = require("./config/database.js");
 const cookieParser = require("cookie-parser");
 const app = express();
 const cors = require("cors");
+const PORT = process.env.PORT || 5000;
 
 app.use(cors({
   origin: "http://localhost:5173",
@@ -30,8 +31,8 @@ app.use('/',usertRouter);
 connectDB()
     .then(()=>{  
         console.log("Database connected successfully");
-        app.listen(3000,()=>{ 
-            console.log("Server is running on port 3000");
+        app.listen(PORT,()=>{ 
+            console.log(`Server is running on port ${PORT}`);
         }); 
     }) 
     .catch((err)=>{
