@@ -225,6 +225,11 @@ const Login = () => {
               setIsLoginForm(!isLoginForm);
               setError("");
               setMessage("");
+              setEmailId("");
+              setPassword("");
+              setFirstName("");
+              setLastName("");
+              setOtp("");
               setStep(1);
             }}
           >
