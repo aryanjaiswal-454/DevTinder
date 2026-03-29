@@ -26,7 +26,6 @@ const UserCard = ({ user }) => {
         {" "}
         <img
           src={photoUrl}
-          loading="lazy"
           alt="profile"
           className="w-full h-full object-cover"
         />
