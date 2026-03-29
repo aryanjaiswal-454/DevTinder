@@ -58,7 +58,7 @@ Instead of dating, the focus is on **building meaningful developer connections**
 * JSON Web Token (JWT) + Cookies  
 
 ### Deployment
-* Netlify (Frontend)  
+* Vercel (Frontend)  
 * Render (Backend)  
 
 ---
