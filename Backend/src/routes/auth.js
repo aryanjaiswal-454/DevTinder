@@ -16,25 +16,52 @@ authRouter.post("/login", async (req, res) => {
   try {
     const { password } = req.body;
     const emailId = req.body.emailId?.toLowerCase().trim();
-    if (!validator.isEmail(emailId)) throw new Error("Invalid credentials");
-    const user = await User.findOne({ emailId }).select("+password");
-    if (!user) throw new Error("Invalid credentials");
+
+    if (!emailId || !validator.isEmail(emailId)) {
+      throw new Error("Please enter a valid email address.");
+    }
+    if (!password) {
+      throw new Error("Please enter your password.");
+    }
+
+    const user = await User.findOne({ emailId });
+    
+    if (!user) {
+      throw new Error("Invalid credentials");
+    }
+
+    if (!user.password && user.googleId) {
+      throw new Error(
+        "This account is linked with Google. Please click 'Continue with Google' to log in."
+      );
+    }
+    if (!user.password) {
+      throw new Error("Invalid credentials");
+    }
+
     const isPasswordValid = await user.validatePassword(password);
+
     if (isPasswordValid) {
       const token = await user.getJWT();
+
       res.cookie("token", token, {
-        expires: new Date(Date.now() + 8 * 3600000),
+        expires: new Date(Date.now() + 8 * 3600000), // 8 Hours
         httpOnly: true,
-        secure: true,
-        sameSite: "None",
+        secure: true,      
+        sameSite: "None",  
         path: "/",
       });
+
       const safeUser = user.toObject();
       delete safeUser.password;
+      delete safeUser.googleId; 
+
       res.send(safeUser);
-    } else throw new Error("Invalid credentials");
+    } else {
+      throw new Error("Invalid credentials");
+    }
   } catch (err) {
-    res.status(401).send("ERROR : " + err.message);
+    res.status(401).send("ERROR: " + err.message);
   }
 });
 
@@ -47,15 +74,19 @@ authRouter.post("/logout", (req, res) => {
   res.send("Logged out successfully");
 });
 
-authRouter.get("/auth/google", passport.authenticate("google", { 
-  scope: ["profile", "email"],
-  prompt: "select_account" 
-}));
+authRouter.get(
+  "/auth/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    prompt: "select_account",
+  }),
+);
 
-authRouter.get("/auth/google/callback", 
-  passport.authenticate("google", { 
-    failureRedirect: "https://devtinder-connectandgrow.netlify.app/login", 
-    session: false 
+authRouter.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "https://devtinder-connectandgrow.netlify.app/login",
+    session: false,
   }),
   async (req, res) => {
     try {
@@ -65,20 +96,21 @@ authRouter.get("/auth/google/callback",
       res.cookie("token", token, {
         expires: new Date(Date.now() + 8 * 3600000),
         httpOnly: true,
-        secure: true,      
-        sameSite: "None", 
+        secure: true,
+        sameSite: "None",
         path: "/",
       });
 
       if (!user.gender || !user.age) {
-        return res.redirect("https://devtinder-connectandgrow.netlify.app/profile"); 
+        return res.redirect("https://devtinder-connectandgrow.netlify.app/profile");
       }
-
-      res.redirect("https://devtinder-connectandgrow.netlify.app/"); 
+      res.redirect("https://devtinder-connectandgrow.netlify.app/");
     } catch (err) {
-      res.redirect("https://devtinder-connectandgrow.netlify.app/login?error=auth_failed"); 
+      res.redirect(
+        "https://devtinder-connectandgrow.netlify.app/login?error=auth_failed",
+      );
     }
-  }
+  },
 );
 
 module.exports = authRouter;

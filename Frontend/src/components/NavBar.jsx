@@ -9,10 +9,14 @@ const NavBar = () => {
   const user = useSelector((store) => store.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const handleLogoClick = (e) => {
+    if (!user) {
+      e.preventDefault(); // Stop the link from going to "/"
+      navigate("/login");
+    }
+  };
   const handleLogout = async () => {
     try {
-      
-      
       const res = await axios.post(
         BASE_URL + "/logout",
         {},
@@ -30,10 +34,15 @@ const NavBar = () => {
   };
   return (
     <div
+      onClick={handleLogoClick}
       style={{ backgroundColor: "#161921" }}
       className="navbar shadow-md border-b border-white/10 flex justify-between items-center"
     >
-      <Link to="/" style={{ backgroundColor: "#161921" }} className="btn btn-ghost text-xl border-none hover:border-none hover:bg-error/10 outline-none focus:outline-none ring-0 focus:ring-0">
+      <Link
+        to="/"
+        style={{ backgroundColor: "#161921" }}
+        className="btn btn-ghost text-xl border-none hover:border-none hover:bg-error/10 outline-none focus:outline-none ring-0 focus:ring-0"
+      >
         <img src="/DevTinderLogo.png" alt="logo" className="h-10 w-auto mr-4" />{" "}
         DevTinder
       </Link>

@@ -35,17 +35,20 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      validate(value) {
-        if (
-          value &&
-          !value.startsWith("GOOGLE_USER_") &&
-          !validator.isStrongPassword(value)
-        ) {
-          throw new Error(
-            "Password is too weak. It must contain letters, numbers, and special characters.",
-          );
-        }
+      validate: {
+        validator: function (value) {
+          if (this.googleId) return true;
+
+          if (!value) return false;
+          return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(value);
+        },
+        message: "Password is not strong enough.",
       },
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
     },
     age: {
       type: Number,
