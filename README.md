@@ -8,7 +8,7 @@ Instead of dating, the focus is on **building meaningful developer connections**
 
 ## 🌐 Live Demo
 
-👉 https://devtinder-connectandgrow.netlify.app/
+👉 https://dev-tinder-five-rho.vercel.app/
 
 ## 📂 GitHub Repository
 
