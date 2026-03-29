@@ -42,7 +42,7 @@ const Login = () => {
 
   return (
     <div className="flex justify-center items-center min-h-[80vh] px-4 mt-2">
-      <div className="card bg-base-300 w-full max-w-md shadow-2xl border border-white/5">
+      <div className="card bg-base-300 w-full max-w-md shadow-2xl border border-white/5 mb-30px">
         <div className="card-body p-8">
           <div className="text-center mb-6">
             <h2 className="text-3xl font-bold mb-2">Welcome to DevTinder</h2>
