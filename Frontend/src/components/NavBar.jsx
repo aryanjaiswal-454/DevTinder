@@ -35,7 +35,7 @@ const NavBar = () => {
   return (
     <div
       onClick={handleLogoClick}
-      style={{ backgroundColor: "#161921" }}
+      style={{ backgroundColor: "#161921", "color": "#ffffff" }}
       className="navbar shadow-md border-b border-white/10 flex justify-between items-center"
     >
       <Link
