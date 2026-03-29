@@ -85,7 +85,7 @@ authRouter.get(
 authRouter.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "https://devtinder-connectandgrow.netlify.app/login",
+    failureRedirect: "https://dev-tinder-five-rho.vercel.app/login",
     session: false,
   }),
   async (req, res) => {
@@ -102,12 +102,12 @@ authRouter.get(
       });
 
       if (!user.gender || !user.age) {
-        return res.redirect("https://devtinder-connectandgrow.netlify.app/profile");
+        return res.redirect("https://dev-tinder-five-rho.vercel.app/profile");
       }
-      res.redirect("https://devtinder-connectandgrow.netlify.app/");
+      res.redirect("https://dev-tinder-five-rho.vercel.app/");
     } catch (err) {
       res.redirect(
-        "https://devtinder-connectandgrow.netlify.app/login?error=auth_failed",
+        "https://dev-tinder-five-rho.vercel.app/login?error=auth_failed",
       );
     }
   },
