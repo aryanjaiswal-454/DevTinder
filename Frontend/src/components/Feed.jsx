@@ -23,23 +23,24 @@ const Feed = () => {
       if (err?.response?.status === 401) {
         navigate("/login");
       }
-    } finally{
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!user) {
-      navigate("/login");
-      return;
+    if (user && (!feed || feed.length === 0)) {
+      getFeed();
+    } else if (user && feed) {
+      setLoading(false);
     }
-    getFeed();
-  }, []);
-  if (loading) return <h1 className="text-center mt-10">Loading...</h1>;
+  }, [user, feed]);
+
+  if (loading) return <h1 className="text-center mt-10 text-2xl">Loading...</h1>;
   if (!feed) return null;
 
   if (feed.length === 0)
-    return <h1 className="flex justify-center my-10">No new users found</h1>;
+    return <h1 className="flex justify-center my-10 text-2xl">No new users found</h1>;
 
   return (
     <div className="flex justify-center my-10">
@@ -47,4 +48,5 @@ const Feed = () => {
     </div>
   );
 };
+
 export default Feed;

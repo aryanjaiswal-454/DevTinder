@@ -11,10 +11,8 @@ const NavBar = () => {
   const dispatch = useDispatch();
   const handleLogout = async () => {
     try {
-      dispatch(removeUser());
-      dispatch(removeFeed());
-      alert("You have been logged out");
-      navigate("/login");
+      
+      
       const res = await axios.post(
         BASE_URL + "/logout",
         {},
@@ -22,6 +20,10 @@ const NavBar = () => {
           withCredentials: true,
         },
       );
+      dispatch(removeUser());
+      dispatch(removeFeed());
+      alert("You have been logged out");
+      navigate("/login");
     } catch (err) {
       console.log(err);
     }

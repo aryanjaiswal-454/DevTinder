@@ -1,7 +1,6 @@
 // ## profileRouter
 // - GET /profile/view
 // - PATCH /profile/edit
-// - PATCH /profile/password
 
 const express = require("express");
 const { userAuth } = require("../middlewares/auth.js");
@@ -30,9 +29,12 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     });
     await loggedInUser.save();
 
+    const safeUser = loggedInUser.toObject();
+    delete safeUser.password;
+
     res.json({
       message: `${loggedInUser.firstName}, your profile is updated successfully`,
-      data: loggedInUser,
+      data: safeUser,
     });
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);

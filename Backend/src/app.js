@@ -3,9 +3,11 @@ require("dotenv").config();
 const express = require("express");
 const connectDB = require("./config/database.js");
 const cookieParser = require("cookie-parser");
-const app = express();
 const cors = require("cors");
 const PORT = process.env.PORT || 5000;
+const passport = require("passport");
+require("./config/passport.js");
+const app = express();
 
 app.use(cors({
   origin: [
@@ -18,6 +20,8 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(passport.initialize());
 
 const authRouter = require('./routes/auth.js');
 const profileRouter = require('./routes/profile.js');

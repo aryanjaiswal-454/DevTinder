@@ -35,20 +35,23 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
-      minLength: 5,
       validate(value) {
-        if (!validator.isStrongPassword(value)) {
-          throw new Error("Password is too weak");
+        if (
+          value &&
+          !value.startsWith("GOOGLE_USER_") &&
+          !validator.isStrongPassword(value)
+        ) {
+          throw new Error(
+            "Password is too weak. It must contain letters, numbers, and special characters.",
+          );
         }
       },
-      // select: false,
     },
     age: {
       type: Number,
       min: 15,
       max: 100,
-      default: undefined ,
+      default: undefined,
     },
     gender: {
       type: String,
@@ -80,7 +83,7 @@ const userSchema = new mongoose.Schema(
       validate: [
         {
           validator: function (arr) {
-            return arr.length <= 7; 
+            return arr.length <= 7;
           },
           message: "You can add maximum 7 skills only",
         },
@@ -96,7 +99,7 @@ const userSchema = new mongoose.Schema(
           message: "Each skill must be non-empty and <= 20 characters",
         },
       ],
-      set: (skills) => skills.map((skill) => skill.trim().toLowerCase()), 
+      set: (skills) => skills.map((skill) => skill.trim().toLowerCase()),
     },
   },
   {
