@@ -53,7 +53,7 @@ const Login = () => {
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="form-control">
               <label className="label py-1">
-                <span className="label-text font-medium text-gray-900">
+                <span className="label-text font-medium text-gray-900 dark:text-gray-100">
                   Email ID
                 </span>
               </label>
@@ -70,7 +70,7 @@ const Login = () => {
 
             <div className="form-control">
               <label className="label py-1">
-                <span className="label-text font-medium text-gray-900">
+                <span className="label-text font-medium text-gray-900 dark:text-gray-100">
                   Password
                 </span>
               </label>

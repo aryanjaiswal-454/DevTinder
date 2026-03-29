@@ -35,7 +35,7 @@ const NavBar = () => {
   return (
     <div
       onClick={handleLogoClick}
-      style={{ backgroundColor: "#161921", "color": "#ffffff" }}
+      style={{ backgroundColor: "#161921" }}
       className="navbar shadow-md border-b border-white/10 flex justify-between items-center"
     >
       <Link
@@ -43,7 +43,7 @@ const NavBar = () => {
         style={{ backgroundColor: "#161921" }}
         className="btn btn-ghost text-xl border-none hover:border-none hover:bg-error/10 outline-none focus:outline-none ring-0 focus:ring-0"
       >
-        <img src="/DevTinderLogo.png" alt="logo" className="h-10 w-auto mr-4" />{" "}
+        <img src="/DevTinderLogo.png" alt="logo" className="h-10 w-auto mr-4 text-gray-900 dark:text-gray-100" />{" "}
         DevTinder
       </Link>
       <div className="flex items-center gap-4">
