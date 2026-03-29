@@ -36,7 +36,7 @@ const NavBar = () => {
     <div
       onClick={handleLogoClick}
       style={{ backgroundColor: "#161921" }}
-      className="navbar shadow-md border-b border-white/10 flex justify-between items-center"
+      className="navbar shadow-md border-b border-white/10 flex justify-between items-center text-gray-100 dark:text-gray-900"
     >
       <Link
         to="/"
