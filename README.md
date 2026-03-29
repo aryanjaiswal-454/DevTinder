@@ -1,48 +1,65 @@
-# DevTinder 🚀
+# 🚀 DevTinder
 
-DevTinder is a **developer networking platform** inspired by Tinder.
-It allows developers to discover, connect, and collaborate with other developers based on shared interests, skills, and projects. Instead of dating, the goal is **building meaningful developer connections**.
+DevTinder is a **developer networking platform** inspired by Tinder.  
+It enables developers to **discover, connect, and collaborate** based on shared skills, interests, and projects.  
+Instead of dating, the focus is on **building meaningful developer connections**.
+
+---
+
+## 🌐 Live Demo
+
+👉 https://devtinder-connectandgrow.netlify.app/
+
+## 📂 GitHub Repository
+
+👉 https://github.com/aryanjaiswal-454/DevTinder
 
 ---
 
 ## 🌟 Features
 
-* 👤 Developer Profiles
-  Users can create and manage their developer profiles.
+* 👤 **Developer Profiles**  
+  Create and manage personalized developer profiles.
 
-* 🤝 Connection Requests
-  Send and receive connection requests with other developers.
+* 🤝 **Connection Requests**  
+  Send, accept, or reject connection requests.
 
-* 🔐 Authentication
-  Secure login and signup system using JWT.
+* 🔐 **Authentication**  
+  Secure login and signup using JWT & cookies.
 
-* 🔎 Explore Developers
-  Browse profiles and discover developers with similar interests.
+* 📧 **Email Verification**  
+  Verify user identity during onboarding.
 
-* ✏️ Profile Editing
-  Update bio, skills, and other profile details.
+* 🔎 **Explore Developers**  
+  Discover developers based on shared skills.
+
+* ✏️ **Profile Editing**  
+  Update bio, skills, and personal details.
+
+* ⚡ **Interactive Feed**  
+  Dynamic feed for better user experience.
 
 ---
 
 ## 🛠 Tech Stack
 
 ### Frontend
-
-* JavaScript
-* ReactJS
+* React.js  
+* JavaScript  
 
 ### Backend
-
-* Node.js
-* Express.js
+* Node.js  
+* Express.js  
 
 ### Database
-
-* MongoDB
+* MongoDB (Atlas)  
 
 ### Authentication
+* JSON Web Token (JWT) + Cookies  
 
-* JSON Web Token (JWT)
+### Deployment
+* Netlify (Frontend)  
+* Render (Backend)  
 
 ---
 
