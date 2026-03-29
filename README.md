@@ -8,11 +8,11 @@ Instead of dating, the focus is on **building meaningful developer connections**
 
 ## 🌐 Live Demo
 
-👉 https://your-app-link.netlify.app  
+👉 https://devtinder-connectandgrow.netlify.app/
 
 ## 📂 GitHub Repository
 
-👉 https://github.com/aryanjaiswal-454/devtinder  
+👉 https://github.com/aryanjaiswal-454/DevTinder
 
 ---
 
