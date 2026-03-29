@@ -8,24 +8,18 @@ import UserCard from "./UserCard.jsx";
 
 const Feed = () => {
   const feed = useSelector((store) => store.feed);
+  const user = useSelector((store) => store.user);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
   const getFeed = async () => {
-    if (feed) {
-      setLoading(false);
-      return;
-    }
     try {
       const res = await axios.get(BASE_URL + "/feed", {
         withCredentials: true,
       });
       dispatch(addFeed(res?.data));
     } catch (err) {
-      // TODO : Handle error
-
-      console.log(err);
       if (err?.response?.status === 401) {
         navigate("/login");
       }
@@ -35,6 +29,10 @@ const Feed = () => {
   };
 
   useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     getFeed();
   }, []);
   if (loading) return <h1 className="text-center mt-10">Loading...</h1>;

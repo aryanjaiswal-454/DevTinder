@@ -8,7 +8,11 @@ const cors = require("cors");
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: "https://devtinder-connectandgrow.netlify.app",
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://devtinder-connectandgrow.netlify.app"
+  ],
   credentials: true
 }));
 

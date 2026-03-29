@@ -4,12 +4,17 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { removeUser } from "../utils/userSlice.js";
+import { removeFeed } from "../utils/feedSlice";
 const NavBar = () => {
   const user = useSelector((store) => store.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = async () => {
     try {
+      dispatch(removeUser());
+      dispatch(removeFeed());
+      alert("You have been logged out");
+      navigate("/login");
       const res = await axios.post(
         BASE_URL + "/logout",
         {},
@@ -17,9 +22,6 @@ const NavBar = () => {
           withCredentials: true,
         },
       );
-      dispatch(removeUser());
-      alert("You have been logged out");
-      return navigate("/login");
     } catch (err) {
       console.log(err);
     }
