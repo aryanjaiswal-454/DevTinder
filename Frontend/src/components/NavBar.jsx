@@ -43,7 +43,7 @@ const NavBar = () => {
         style={{ backgroundColor: "#161921" }}
         className="btn btn-ghost text-xl border-none hover:border-none hover:bg-error/10 outline-none focus:outline-none ring-0 focus:ring-0"
       >
-        <img src="/DevTinderLogo.png" alt="logo" className="h-10 w-auto mr-4 text-gray-900 dark:text-gray-100" />{" "}
+        <img src="/DevTinderLogo.png" alt="logo" className="h-10 w-auto mr-4 text-gray-100" />{" "}
         DevTinder
       </Link>
       <div className="flex items-center gap-4">
@@ -66,7 +66,7 @@ const NavBar = () => {
               </div>
               <ul
                 tabIndex={0}
-                className="menu menu-sm dropdown-content bg-base-300  rounded-2xl z-[1] mt-3 w-52 p-2 shadow-xl border border-white/10"
+                className="menu menu-sm dropdown-content bg-base-300  rounded-2xl z-[1] mt-3 w-52 p-2 shadow-xl border border-white/10" style={{ backgroundColor: "#161921" }}
               >
                 <li>
                   <Link
