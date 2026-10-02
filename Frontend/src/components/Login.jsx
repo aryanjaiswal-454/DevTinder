@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
@@ -28,7 +28,12 @@ const Login = () => {
       dispatch(addUser(res.data));
       navigate("/");
     } catch (err) {
-      setError(err.response?.data || "Invalid credentials. Please try again.");
+      const message = err.response?.data;
+      setError(
+        typeof message === "string"
+          ? message.replace(/^ERROR:\s*/i, "")
+          : "Invalid credentials. Please try again.",
+      );
       setTimeout(() => setError(""), 5000);
     } finally {
       setLoading(false);
@@ -42,7 +47,7 @@ const Login = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen px-4 mt-2 pb-24">
-      <div className="card bg-base-300 w-full max-w-md shadow-2xl border border-white/5 mb-30px">
+      <div className="card bg-base-300 w-full max-w-md shadow-2xl border border-white/5 mb-8">
         <div className="card-body p-8">
           <div className="text-center mb-6">
             <h2 className="text-3xl font-bold mb-2">Welcome to DevTinder</h2>
@@ -85,7 +90,10 @@ const Login = () => {
 
             <div className="min-h-[24px]">
               {error && (
-                <p className="text-error text-center text-sm font-medium animate-pulse">
+                <p
+                  className="text-error text-center text-sm font-medium animate-pulse"
+                  role="alert"
+                >
                   {error}
                 </p>
               )}
@@ -108,6 +116,12 @@ const Login = () => {
                 Signed up with Google? Please use the button below to login.
               </p>
             </div>
+            <p className="text-center text-sm">
+              New to DevTinder?{" "}
+              <Link className="link link-primary" to="/signup">
+                Create an account
+              </Link>
+            </p>
           </form>
 
           <div className="divider text-gray-500 text-xs font-semibold my-6 uppercase">

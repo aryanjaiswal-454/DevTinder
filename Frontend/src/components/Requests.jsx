@@ -1,14 +1,17 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addRequests } from "../utils/requestSlice";
 import { removeRequest } from "../utils/requestSlice";
+import { useNavigate } from "react-router-dom";
 
 const Requests = () => {
   const requests = useSelector((store) => store.requests);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [error, setError] = useState("");
 
   const reviewRequest = async (status, _id) => {
     try {
@@ -21,25 +24,56 @@ const Requests = () => {
       );
       dispatch(removeRequest(_id));
     } catch (err) {
-      console.log(err.response?.data || err.message);
+      if (err.response?.status === 401) {
+        navigate("/login", { replace: true });
+      } else {
+        console.error("Unable to review connection request:", err);
+      }
     }
   };
-  const fetchRequests = async () => {
-    try {
-      const res = await axios.get(BASE_URL + "/user/requests/received", {
-        withCredentials: true,
-      });
-      dispatch(addRequests(res?.data?.receivedRequests));
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
-    fetchRequests();
-  }, []);
+    let isCurrent = true;
+    const controller = new AbortController();
 
-  if (!requests) return;
+    axios.get(BASE_URL + "/user/requests/received", {
+      withCredentials: true,
+      signal: controller.signal,
+    }).then((res) => {
+      if (isCurrent) dispatch(addRequests(res?.data?.receivedRequests));
+    }).catch((err) => {
+      if (!isCurrent || axios.isCancel(err)) return;
+      if (err.response?.status === 401) {
+        navigate("/login", { replace: true });
+      } else {
+        setError("Unable to load connection requests. Please try again.");
+        console.error("Unable to load connection requests:", err);
+      }
+    });
+
+    return () => {
+      isCurrent = false;
+      controller.abort();
+    };
+  }, [dispatch, navigate, retryCount]);
+
+  const retryFetchRequests = () => {
+    setError("");
+    setRetryCount((count) => count + 1);
+  };
+
+  if (error) {
+    return (
+      <div className="text-center my-10">
+        <p role="alert">{error}</p>
+        <button className="btn btn-primary mt-4" onClick={retryFetchRequests}>
+          Retry
+        </button>
+      </div>
+    );
+  }
+  if (!requests) return <p className="text-center my-10" role="status">Loading requests...</p>;
   if (requests.length === 0)
     return <h1 className="flex justify-center my-10">No requests found</h1>;
   return (

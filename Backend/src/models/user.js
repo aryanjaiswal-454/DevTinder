@@ -40,9 +40,9 @@ const userSchema = new mongoose.Schema(
           if (this.googleId) return true;
 
           if (!value) return false;
-          return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(value);
+          return /^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/.test(value);
         },
-        message: "Password is not strong enough.",
+        message: "Password must be stored as a bcrypt hash.",
       },
     },
     googleId: {

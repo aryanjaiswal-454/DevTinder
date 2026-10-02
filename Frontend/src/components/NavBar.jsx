@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -9,15 +8,9 @@ const NavBar = () => {
   const user = useSelector((store) => store.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const handleLogoClick = (e) => {
-    if (!user) {
-      e.preventDefault(); // Stop the link from going to "/"
-      navigate("/login");
-    }
-  };
   const handleLogout = async () => {
     try {
-      const res = await axios.post(
+      await axios.post(
         BASE_URL + "/logout",
         {},
         {
@@ -26,15 +19,13 @@ const NavBar = () => {
       );
       dispatch(removeUser());
       dispatch(removeFeed());
-      alert("You have been logged out");
-      navigate("/login");
+      navigate("/login", { replace: true });
     } catch (err) {
-      console.log(err);
+      console.error("Unable to log out:", err);
     }
   };
   return (
     <div
-      onClick={handleLogoClick}
       style={{ backgroundColor: "#161921" }}
       className="navbar shadow-md border-b border-white/10 flex justify-between items-center text-gray-100"
     >

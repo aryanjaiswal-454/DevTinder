@@ -12,6 +12,7 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
     "https://dev-tinder-five-rho.vercel.app",
   ],
   credentials: true
@@ -41,5 +42,6 @@ connectDB()
         }); 
     }) 
     .catch((err)=>{
-        console.log("ERROR : Database did not connected");
+        console.error("ERROR: Database did not connect:", err);
+        process.exitCode = 1;
     })

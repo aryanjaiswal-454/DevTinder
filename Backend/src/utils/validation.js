@@ -1,10 +1,17 @@
 const validator = require("validator");
 
 const validateSignUpData = (req) => {
-  const { firstName, lastName, emailId, password } = req.body;
-  if (!firstName || !lastName) throw new Error("Enter your full name");
-  else if (!validator.isEmail(emailId)) throw new Error("Invalid EmailID");
-  else if (!password) throw new Error("Password is required");
+  const { firstName, lastName, emailId, password } = req.body || {};
+  if (typeof firstName !== "string" || !firstName.trim() ||
+      typeof lastName !== "string" || !lastName.trim()) {
+    throw new Error("Enter your full name");
+  } else if (firstName.trim().length > 20 || lastName.trim().length > 20) {
+    throw new Error("Names must be 20 characters or fewer");
+  } else if (typeof emailId !== "string" || !validator.isEmail(emailId.trim())) {
+    throw new Error("Invalid EmailID");
+  } else if (typeof password !== "string" || !password) {
+    throw new Error("Password is required");
+  }
   else if (!validator.isStrongPassword(password))
     throw new Error("Password is too weak");
 };

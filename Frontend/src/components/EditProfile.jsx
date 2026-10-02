@@ -19,18 +19,20 @@ const EditProfile = ({ user }) => {
   const dispatch = useDispatch();
   const saveProfile = async () => {
     setError("");
+    const profileData = {
+      firstName,
+      lastName,
+      gender,
+      about,
+      photoUrl,
+      skills,
+    };
+    if (age !== "") profileData.age = Number(age);
+
     try {
       const res = await axios.patch(
         BASE_URL + "/profile/edit",
-        {
-          firstName,
-          lastName,
-          age,
-          gender,
-          about,
-          photoUrl,
-          skills,
-        },
+        profileData,
         {
           withCredentials: true,
         },
@@ -48,7 +50,7 @@ const EditProfile = ({ user }) => {
   const handleAddSkill = () => {
     if (!skillInput.trim()) return;
 
-    if (skills.length >= 10) return; // limit
+    if (skills.length >= 7) return;
 
     if (skills.includes(skillInput.trim().toLowerCase())) return; // no duplicates
 
@@ -97,7 +99,7 @@ const EditProfile = ({ user }) => {
                       Age
                     </legend>
                     <input
-                      type="number" min="0" max="100" 
+                      type="number" min="15" max="100" required
                       value={age}
                       className="input input-bordered w-full px-3"
                       onChange={(e) => setAge(e.target.value)}
@@ -166,9 +168,9 @@ const EditProfile = ({ user }) => {
                       ))}
                     </div>
 
-                    {skills.length >= 10 && (
+                    {skills.length >= 7 && (
                       <p className="text-xs text-red-400 mt-1">
-                        Maximum 10 skills allowed
+                        Maximum 7 skills allowed
                       </p>
                     )}
                   </fieldset>
@@ -178,6 +180,7 @@ const EditProfile = ({ user }) => {
                     </legend>
                     <input
                       type="text"
+                      maxLength={100}
                       value={about}
                       className="input input-bordered w-full px-3"
                       onChange={(e) => setAbout(e.target.value)}
@@ -188,7 +191,8 @@ const EditProfile = ({ user }) => {
                       Photo URL
                     </legend>
                     <input
-                      type="text"
+                      type="url"
+                      required
                       value={photoUrl}
                       className="input input-bordered w-full px-3"
                       onChange={(e) => setPhotoUrl(e.target.value)}

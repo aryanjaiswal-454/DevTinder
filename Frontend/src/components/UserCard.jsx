@@ -3,11 +3,13 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "../utils/feedSlice";
+import { useNavigate } from "react-router-dom";
 
 const UserCard = ({ user }) => {
   const { _id, firstName, lastName, photoUrl, age, gender, about, skills } =
     user;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleSendRequest = async (status, userId) => {
     try {
       const res = await axios.post(
@@ -17,7 +19,11 @@ const UserCard = ({ user }) => {
       );
       dispatch(removeUserFromFeed(userId));
     } catch (err) {
-      console.log(err.message);
+      if (err.response?.status === 401) {
+        navigate("/login", { replace: true });
+      } else {
+        console.error("Unable to send connection request:", err);
+      }
     }
   };
   return (

@@ -1,27 +1,58 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnections } from "../utils/connectionSlice";
+import { useNavigate } from "react-router-dom";
 
 const Connections = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const connections = useSelector((store) => store.connections);
-  const fetchConnections = async () => {
-    try {
-      const res = await axios.get(BASE_URL + "/user/connections", {
-        withCredentials: true,
-      });
-      dispatch(addConnections(res?.data?.data));
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-  useEffect(() => {
-    fetchConnections();
-  }, []);
+  const [error, setError] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
 
-  if (!connections) return;
+  useEffect(() => {
+    let isCurrent = true;
+    const controller = new AbortController();
+
+    axios.get(BASE_URL + "/user/connections", {
+      withCredentials: true,
+      signal: controller.signal,
+    }).then((res) => {
+      if (isCurrent) dispatch(addConnections(res?.data?.data));
+    }).catch((err) => {
+      if (!isCurrent || axios.isCancel(err)) return;
+      if (err.response?.status === 401) {
+        navigate("/login", { replace: true });
+      } else {
+        setError("Unable to load your connections. Please try again.");
+        console.error("Unable to load connections:", err);
+      }
+    });
+
+    return () => {
+      isCurrent = false;
+      controller.abort();
+    };
+  }, [dispatch, navigate, retryCount]);
+
+  const retryFetchConnections = () => {
+    setError("");
+    setRetryCount((count) => count + 1);
+  };
+
+  if (error) {
+    return (
+      <div className="text-center my-10">
+        <p role="alert">{error}</p>
+        <button className="btn btn-primary mt-4" onClick={retryFetchConnections}>
+          Retry
+        </button>
+      </div>
+    );
+  }
+  if (!connections) return <p className="text-center my-10" role="status">Loading connections...</p>;
   if (connections.length === 0) return <h1 className="flex justify-center my-10">No connections found</h1>;
   return (
     <div className="text-center my-10">
