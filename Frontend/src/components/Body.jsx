@@ -54,22 +54,24 @@ const Body = () => {
   const authCheckFailed = failedAuthAttempt === authAttempt;
 
   return (
-    <div>
+    <div className="flex min-h-screen flex-col">
       <NavBar />
-      {isPublicRoute ? (
-        <Outlet />
-      ) : userData ? (
-        <Outlet />
-      ) : authCheckFailed ? (
-        <div className="text-center mt-10">
-          <p role="alert">We could not connect to the server. Please try again.</p>
-          <button className="btn btn-primary mt-4" onClick={retryAuthCheck}>
-            Retry
-          </button>
-        </div>
-      ) : (
-        <p className="text-center mt-10 text-2xl" role="status">Checking your session...</p>
-      )}
+      <main className="flex flex-1 flex-col">
+        {isPublicRoute ? (
+          <Outlet />
+        ) : userData ? (
+          <Outlet />
+        ) : authCheckFailed ? (
+          <div className="flex-1 text-center mt-10">
+            <p role="alert">We could not connect to the server. Please try again.</p>
+            <button className="btn btn-primary mt-4" onClick={retryAuthCheck}>
+              Retry
+            </button>
+          </div>
+        ) : (
+          <p className="flex-1 text-center mt-10 text-2xl" role="status">Checking your session...</p>
+        )}
+      </main>
       <Footer />
     </div>
   )

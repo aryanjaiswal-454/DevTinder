@@ -63,7 +63,7 @@ const EditProfile = ({ user }) => {
   };
   return (
     <>
-      <div className="min-h-screen flex justify-center items-center px-6 py-10 bg-base-200 mb-20">
+      <div className="flex-1 flex justify-center items-center px-6 py-10 bg-base-200 mb-20">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-16">
           <div className="flex justify-center">
             <div className="card bg-base-300 w-96 shadow-sm mb-20">
